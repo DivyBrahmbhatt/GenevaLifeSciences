@@ -1,0 +1,23 @@
+packages:
+  "framer-motion": "For page transitions and smooth reveal animations"
+  "clsx": "For conditionally joining tailwind classes"
+  "tailwind-merge": "For merging tailwind classes without style conflicts"
+  "@hookform/resolvers": "Zod validation for react-hook-form"
+  "react-hook-form": "For form state management in contact page"
+  "zod": "For contact form schema validation"
+
+images:
+  - path: "artifacts/geneva-life-sciences/public/images/hero-bg.png"
+    description: "Clean, abstract, high-tech medical background with soft light teal and blue gradients, subtle molecular structures, bright and airy, professional"
+    aspect_ratio: "16:9"
+  - path: "artifacts/geneva-life-sciences/public/images/facility.png"
+    description: "Modern pharmaceutical manufacturing facility exterior, bright daylight, professional corporate building, clean glass and steel"
+    aspect_ratio: "16:9"
+  - path: "artifacts/geneva-life-sciences/public/images/lab.png"
+    description: "Clean white medical laboratory with modern testing equipment, soft blue lighting, professional pharmaceutical setting, no people"
+    aspect_ratio: "16:9"
+
+notes:
+  - Using generated hooks from @workspace/api-client-react as specified in the monorepo architecture
+  - The contact form uses local state to show a success message since toaster implementation details aren't fully known
+  - Utilizing wouter for all client-side routing

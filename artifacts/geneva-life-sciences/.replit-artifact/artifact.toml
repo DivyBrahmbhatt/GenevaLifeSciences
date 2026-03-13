@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/"
+title = "Geneva Life Sciences Private Limited"
+version = "1.0.0"
+id = "artifacts/geneva-life-sciences"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+localPort = 20544
+name = "web"
+paths = ["/"]
+
+[services.development]
+run = "pnpm --filter @workspace/geneva-life-sciences run dev"
+
+[services.env]
+PORT = "20544"
+BASE_PATH = "/"
+
+[services.production]
+build = ["pnpm", "--filter", "@workspace/geneva-life-sciences", "run", "build"]
+publicDir = "artifacts/geneva-life-sciences/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
