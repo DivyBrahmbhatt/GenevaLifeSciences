@@ -1,16 +1,15 @@
-import { useState, useMemo } from "react";
-import { Link, useLocation } from "wouter";
+import { useState, useMemo, useEffect } from "react";
+import { Link, useLocation, useRoute } from "wouter";
 import { Layout } from "@/components/Layout";
 import { Search, Filter, Box, AlertCircle } from "lucide-react";
 import { useGetProducts, useGetCategories } from "@workspace/api-client-react";
 
 export default function Products() {
   const [location] = useLocation();
-  const searchParams = new URLSearchParams(window.location.search);
-  const initialCategory = searchParams.get('category') || '';
+  const [, params] = useRoute("/products/:categorySlug");
+  const selectedCategory = params?.categorySlug || "";
 
   const [search, setSearch] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState(initialCategory);
 
   const { data: categories, isLoading: isLoadingCategories } = useGetCategories();
   
@@ -19,6 +18,10 @@ export default function Products() {
     search: search || undefined,
     category: selectedCategory || undefined
   });
+
+  useEffect(() => {
+    setSearch(""); // Reset search when category changes
+  }, [selectedCategory]);
 
   // Unique categories for the sidebar if API isn't ready
   const activeCategories = useMemo(() => {
@@ -54,22 +57,24 @@ export default function Products() {
             ) : (
               <ul className="space-y-2">
                 <li>
-                  <button 
-                    onClick={() => setSelectedCategory("")}
-                    className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${
+                  <Link 
+                    href="/products"
+                    onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                    className={`block w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${
                       selectedCategory === "" 
                         ? "bg-primary text-primary-foreground font-semibold" 
                         : "text-muted-foreground hover:bg-muted hover:text-foreground"
                     }`}
                   >
                     All Products
-                  </button>
+                  </Link>
                 </li>
                 {activeCategories.map(cat => (
                   <li key={cat.id}>
-                    <button 
-                      onClick={() => setSelectedCategory(cat.slug)}
-                      className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors flex justify-between items-center ${
+                    <Link 
+                      href={`/products/${cat.slug}`}
+                      onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                      className={`block w-full text-left px-3 py-2 rounded-lg text-sm transition-colors flex justify-between items-center ${
                         selectedCategory === cat.slug 
                           ? "bg-primary text-primary-foreground font-semibold" 
                           : "text-muted-foreground hover:bg-muted hover:text-foreground"
@@ -81,7 +86,7 @@ export default function Products() {
                       }`}>
                         {cat.productCount}
                       </span>
-                    </button>
+                    </Link>
                   </li>
                 ))}
               </ul>
@@ -109,8 +114,7 @@ export default function Products() {
           {isLoadingProducts ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {[1,2,3,4,5,6].map(i => (
-                <div key={i} className="bg-card rounded-2xl border border-border p-6 h-64 animate-pulse flex flex-col">
-                  <div className="w-16 h-16 bg-muted rounded-xl mb-4" />
+                <div key={i} className="bg-card rounded-2xl border border-border p-6 h-56 animate-pulse flex flex-col">
                   <div className="h-5 bg-muted rounded w-3/4 mb-3" />
                   <div className="h-4 bg-muted rounded w-1/4 mb-6" />
                   <div className="h-16 bg-muted rounded w-full mt-auto" />
@@ -129,12 +133,12 @@ export default function Products() {
               <h3 className="text-xl font-bold text-foreground mb-2">No products found</h3>
               <p className="text-muted-foreground">Try adjusting your search query or category filter.</p>
               {(search || selectedCategory) && (
-                <button 
-                  onClick={() => { setSearch(""); setSelectedCategory(""); }}
+                <Link 
+                  href="/products"
                   className="mt-6 text-primary font-semibold hover:underline"
                 >
                   Clear all filters
-                </button>
+                </Link>
               )}
             </div>
           ) : (
@@ -142,14 +146,12 @@ export default function Products() {
               {products?.map(product => (
                 <Link 
                   key={product.id} 
-                  href={`/products/${product.id}`}
-                  className="bg-card group rounded-2xl border border-border/60 p-6 shadow-sm hover:shadow-xl hover:border-primary/40 transition-all duration-300 flex flex-col"
+                  href={`/products/${product.categorySlug}/${product.slug}`}
+                  className="bg-card group rounded-2xl border border-border/60 p-6 shadow-sm hover:shadow-xl hover:border-primary/40 transition-all duration-300 flex flex-col h-full"
                 >
-                  <div className="w-12 h-12 rounded-xl bg-primary/5 text-primary flex items-center justify-center mb-5 group-hover:scale-110 group-hover:bg-primary group-hover:text-white transition-all">
-                    <Box className="w-6 h-6" />
-                  </div>
                   <div className="mb-2">
-                    <span className="inline-block px-2.5 py-1 bg-secondary/10 text-secondary text-xs font-bold rounded-md mb-3 uppercase tracking-wider">
+                    <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-secondary/10 text-secondary text-xs font-bold rounded-md mb-3 uppercase tracking-wider">
+                      <Box className="w-3 h-3" />
                       {product.categoryName}
                     </span>
                     <h3 className="text-lg font-bold text-foreground leading-tight group-hover:text-primary transition-colors">

@@ -4,12 +4,11 @@ import { ArrowLeft, Box, Check, ChevronRight, Activity, Syringe } from "lucide-r
 import { useGetProduct } from "@workspace/api-client-react";
 
 export default function ProductDetail() {
-  const [, params] = useRoute("/products/:id");
-  const productId = parseInt(params?.id || "0", 10);
+  const [, params] = useRoute("/products/:categorySlug/:slug");
+  const categorySlug = params?.categorySlug || "";
+  const slug = params?.slug || "";
 
-  const { data: product, isLoading, error } = useGetProduct(productId, {
-    query: { enabled: !!productId }
-  });
+  const { data: product, isLoading, error } = useGetProduct(categorySlug, slug);
 
   if (isLoading) {
     return (
@@ -17,8 +16,7 @@ export default function ProductDetail() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="animate-pulse">
             <div className="h-4 bg-muted w-32 rounded mb-8"></div>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-              <div className="aspect-square bg-muted rounded-3xl"></div>
+            <div className="max-w-4xl mx-auto">
               <div className="space-y-6 pt-8">
                 <div className="h-6 bg-muted w-24 rounded"></div>
                 <div className="h-10 bg-muted w-3/4 rounded"></div>
@@ -59,26 +57,8 @@ export default function ProductDetail() {
           <span className="text-foreground font-medium">{product.name}</span>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
-          {/* Left: Image Placeholder */}
-          <div className="lg:col-span-5">
-            <div className="aspect-square bg-gradient-to-br from-slate-100 to-slate-200 rounded-3xl border border-border flex flex-col items-center justify-center p-8 shadow-inner relative overflow-hidden">
-              <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/clean-textile.png')] opacity-10 mix-blend-overlay"></div>
-              
-              {product.isPrefillSyringe ? (
-                <Syringe className="w-32 h-32 text-primary/30 mb-6" />
-              ) : (
-                <Box className="w-32 h-32 text-primary/30 mb-6" />
-              )}
-              <div className="text-center relative z-10">
-                <span className="text-lg font-bold text-slate-400">{product.name}</span>
-                <p className="text-sm text-slate-500 mt-2">Product visualization unavailable</p>
-              </div>
-            </div>
-          </div>
-
-          {/* Right: Details */}
-          <div className="lg:col-span-7 flex flex-col">
+        <div className="max-w-4xl mx-auto">
+          <div className="flex flex-col">
             <div className="mb-6">
               <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary/10 text-secondary text-sm font-bold uppercase tracking-wider mb-4">
                 {product.categoryName}

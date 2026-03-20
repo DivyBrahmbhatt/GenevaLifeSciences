@@ -15,8 +15,8 @@ export default function NotFound() {
           <p className="text-muted-foreground max-w-md mx-auto mb-8">
             The page you are looking for might have been removed, had its name changed, or is temporarily unavailable.
           </p>
-          <Link 
-            href="/" 
+          <Link
+            href="/"
             className="inline-flex items-center justify-center px-8 py-3 bg-primary text-primary-foreground font-semibold rounded-full shadow-lg shadow-primary/20 hover:-translate-y-0.5 transition-all"
           >
             Return to Home
@@ -26,3 +26,4 @@ export default function NotFound() {
     </Layout>
   );
 }
+``

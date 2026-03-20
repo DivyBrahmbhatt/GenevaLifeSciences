@@ -63,6 +63,7 @@ router.get("/products", async (req, res) => {
         .select({
           id: productsTable.id,
           name: productsTable.name,
+          slug: productsTable.slug,
           categoryId: productsTable.categoryId,
           categoryName: categoriesTable.name,
           categorySlug: categoriesTable.slug,
@@ -87,6 +88,7 @@ router.get("/products", async (req, res) => {
         .select({
           id: productsTable.id,
           name: productsTable.name,
+          slug: productsTable.slug,
           categoryId: productsTable.categoryId,
           categoryName: categoriesTable.name,
           categorySlug: categoriesTable.slug,
@@ -111,14 +113,15 @@ router.get("/products", async (req, res) => {
   }
 });
 
-router.get("/products/:id", async (req, res) => {
+router.get("/products/:categorySlug/:slug", async (req, res) => {
   try {
-    const { id } = GetProductParams.parse(req.params);
+    const { categorySlug, slug } = GetProductParams.parse(req.params);
 
     const [product] = await db
       .select({
         id: productsTable.id,
         name: productsTable.name,
+        slug: productsTable.slug,
         categoryId: productsTable.categoryId,
         categoryName: categoriesTable.name,
         categorySlug: categoriesTable.slug,
@@ -132,7 +135,7 @@ router.get("/products/:id", async (req, res) => {
       })
       .from(productsTable)
       .innerJoin(categoriesTable, eq(productsTable.categoryId, categoriesTable.id))
-      .where(eq(productsTable.id, id));
+      .where(and(eq(productsTable.slug, slug), eq(categoriesTable.slug, categorySlug)));
 
     if (!product) {
       res.status(404).json({ error: "Product not found" });

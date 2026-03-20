@@ -21,8 +21,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
       <div className="bg-primary text-primary-foreground py-2 px-4 sm:px-6 lg:px-8 text-sm font-medium hidden md:block">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <div className="flex items-center space-x-6">
-            <span className="flex items-center gap-2"><Phone className="w-4 h-4" /> +91 123 456 7890</span>
-            <span className="flex items-center gap-2"><Mail className="w-4 h-4" /> info@genevalifesciences.com</span>
+            <span className="flex items-center gap-2"><Phone className="w-4 h-4" /> +91 93160 92829 / +91 84016 12403</span>
+            <span className="flex items-center gap-2"><Mail className="w-4 h-4" /> hello@genevalifesciences.com</span>
           </div>
           <div className="flex items-center gap-2">
             <span>ISO 9001 & GMP Certified Manufacturing</span>
@@ -34,8 +34,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
       <header className="sticky top-0 z-50 w-full bg-card/80 backdrop-blur-lg border-b border-border/50 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-3 group">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-white shadow-lg shadow-primary/20 group-hover:scale-105 transition-transform">
-              <Activity className="w-6 h-6" />
+            <div className="w-12 h-12 flex items-center justify-center group-hover:scale-105 transition-transform">
+              <img src="/logo.png" alt="Geneva Life Sciences Logo" className="w-full h-full object-contain" />
             </div>
             <div>
               <h1 className="font-display font-bold text-xl leading-tight text-foreground">Geneva Life Sciences</h1>
@@ -50,6 +50,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
                 <Link
                   key={link.name}
                   href={link.href}
+                  onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
                   className={cn(
                     "text-sm font-semibold transition-colors duration-200 hover:text-primary relative py-2",
                     isActive ? "text-primary" : "text-foreground/80"
@@ -107,8 +108,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
             <div className="md:col-span-1">
               <Link href="/" className="flex items-center gap-3 mb-6">
-                <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-white">
-                  <Activity className="w-5 h-5" />
+                <div className="w-10 h-10 flex items-center justify-center bg-white rounded-full p-1">
+                  <img src="/logo.png" alt="Geneva Life Sciences Logo" className="w-full h-full object-contain" />
                 </div>
                 <div>
                   <h2 className="font-display font-bold text-lg leading-none text-white">Geneva Life Sciences</h2>
@@ -122,20 +123,19 @@ export function Layout({ children }: { children: React.ReactNode }) {
             <div>
               <h3 className="text-white font-semibold mb-6">Quick Links</h3>
               <ul className="space-y-4 text-sm">
-                <li><Link href="/about" className="hover:text-primary transition-colors">About Us</Link></li>
-                <li><Link href="/categories" className="hover:text-primary transition-colors">Therapeutic Categories</Link></li>
-                <li><Link href="/products" className="hover:text-primary transition-colors">Product Directory</Link></li>
-                <li><Link href="/contact" className="hover:text-primary transition-colors">Contact Support</Link></li>
+                <li><Link href="/about" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="hover:text-primary transition-colors">About Us</Link></li>
+                <li><Link href="/categories" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="hover:text-primary transition-colors">Therapeutic Categories</Link></li>
+                <li><Link href="/products" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="hover:text-primary transition-colors">Product Directory</Link></li>
+                <li><Link href="/contact" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="hover:text-primary transition-colors">Contact Support</Link></li>
               </ul>
             </div>
 
             <div>
               <h3 className="text-white font-semibold mb-6">Key Categories</h3>
               <ul className="space-y-4 text-sm">
-                <li><Link href="/products?category=prefilled-syringes" className="hover:text-primary transition-colors">Prefilled Syringes</Link></li>
-                <li><Link href="/products?category=ophthalmic" className="hover:text-primary transition-colors">Ophthalmic Preparations</Link></li>
-                <li><Link href="/products?category=cephalosporin" className="hover:text-primary transition-colors">Cephalosporin</Link></li>
-                <li><Link href="/products?category=ointments-creams" className="hover:text-primary transition-colors">Ointments & Creams</Link></li>
+                <li><Link href="/products/injectables" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="hover:text-primary transition-colors">Injectables</Link></li>
+                <li><Link href="/products/tablet-capsules" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="hover:text-primary transition-colors">Tablet/capsules</Link></li>
+                <li><Link href="/products/apis" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="hover:text-primary transition-colors">APIs(Active Pharmaceutical Ingredients)</Link></li>
               </ul>
             </div>
 
@@ -144,15 +144,15 @@ export function Layout({ children }: { children: React.ReactNode }) {
               <ul className="space-y-4 text-sm">
                 <li className="flex items-start gap-3">
                   <MapPin className="w-5 h-5 text-primary shrink-0" />
-                  <span>123 Medical Innovation Park, Industrial Estate, Geneva City, 40001</span>
+                  <span>F 13, Saket Business Hub, Panchot, Mahesana, Gujarat, India, 384205</span>
                 </li>
                 <li className="flex items-center gap-3">
                   <Phone className="w-5 h-5 text-primary shrink-0" />
-                  <span>+91 123 456 7890</span>
+                  <span>+91 93160 92829 / +91 84016 12403</span>
                 </li>
                 <li className="flex items-center gap-3">
                   <Mail className="w-5 h-5 text-primary shrink-0" />
-                  <span>info@genevalifesciences.com</span>
+                  <span>hello@genevalifesciences.com</span>
                 </li>
               </ul>
             </div>

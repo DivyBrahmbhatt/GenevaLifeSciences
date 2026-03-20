@@ -30,6 +30,7 @@ export const GetProductsQueryParams = zod.object({
 export const GetProductsResponseItem = zod.object({
   id: zod.number(),
   name: zod.string(),
+  slug: zod.string(),
   categoryId: zod.number(),
   categoryName: zod.string(),
   categorySlug: zod.string(),
@@ -44,15 +45,17 @@ export const GetProductsResponseItem = zod.object({
 export const GetProductsResponse = zod.array(GetProductsResponseItem);
 
 /**
- * @summary Get product by ID
+ * @summary Get product by category and slug
  */
 export const GetProductParams = zod.object({
-  id: zod.coerce.number(),
+  categorySlug: zod.coerce.string(),
+  slug: zod.coerce.string(),
 });
 
 export const GetProductResponse = zod.object({
   id: zod.number(),
   name: zod.string(),
+  slug: zod.string(),
   categoryId: zod.number(),
   categoryName: zod.string(),
   categorySlug: zod.string(),

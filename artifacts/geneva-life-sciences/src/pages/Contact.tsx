@@ -19,7 +19,7 @@ type ContactFormValues = z.infer<typeof contactSchema>;
 
 export default function Contact() {
   const [success, setSuccess] = useState(false);
-  
+
   const { register, handleSubmit, reset, formState: { errors } } = useForm<ContactFormValues>({
     resolver: zodResolver(contactSchema),
   });
@@ -52,7 +52,7 @@ export default function Contact() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 lg:gap-8">
-          
+
           {/* Contact Info Sidebar */}
           <div className="lg:col-span-1 space-y-8">
             <div>
@@ -64,7 +64,7 @@ export default function Contact() {
                   </div>
                   <div>
                     <h4 className="font-bold text-foreground">Address</h4>
-                    <p className="text-muted-foreground mt-1">123 Medical Innovation Park,<br/>Industrial Estate,<br/>Geneva City, 40001, India</p>
+                    <p className="text-muted-foreground mt-1">F 13, Saket Business Hub,<br />Panchot, Mahesana,<br />Gujarat, India, 384205</p>
                   </div>
                 </div>
 
@@ -74,7 +74,7 @@ export default function Contact() {
                   </div>
                   <div>
                     <h4 className="font-bold text-foreground">Phone</h4>
-                    <p className="text-muted-foreground mt-1">+91 123 456 7890<br/>+91 987 654 3210</p>
+                    <p className="text-muted-foreground mt-1">+91 93160 92829<br />+91 84016 12403</p>
                   </div>
                 </div>
 
@@ -84,7 +84,7 @@ export default function Contact() {
                   </div>
                   <div>
                     <h4 className="font-bold text-foreground">Email</h4>
-                    <p className="text-muted-foreground mt-1">info@genevalifesciences.com<br/>sales@genevalifesciences.com</p>
+                    <p className="text-muted-foreground mt-1">hello@genevalifesciences.com</p>
                   </div>
                 </div>
               </div>
@@ -100,7 +100,7 @@ export default function Contact() {
                   <CheckCircle2 className="w-20 h-20 text-green-500 mb-6" />
                   <h3 className="text-2xl font-bold mb-2">Message Sent Successfully!</h3>
                   <p className="text-muted-foreground">Thank you for contacting us. A representative will get back to you shortly.</p>
-                  <button 
+                  <button
                     onClick={() => setSuccess(false)}
                     className="mt-8 px-6 py-2 bg-primary/10 text-primary font-semibold rounded-lg hover:bg-primary/20 transition-colors"
                   >
@@ -110,7 +110,7 @@ export default function Contact() {
               )}
 
               <h2 className="text-2xl font-bold mb-8">Send Us a Message</h2>
-              
+
               {mutation.isError && (
                 <div className="bg-red-50 text-red-600 p-4 rounded-xl flex items-start gap-3 mb-8 border border-red-100">
                   <AlertCircle className="w-5 h-5 shrink-0 mt-0.5" />
@@ -125,7 +125,7 @@ export default function Contact() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <label className="block text-sm font-semibold text-foreground mb-2">Full Name *</label>
-                    <input 
+                    <input
                       {...register("name")}
                       className={`w-full px-4 py-3 rounded-xl bg-background border-2 ${errors.name ? 'border-red-400 focus:ring-red-100' : 'border-border focus:border-primary focus:ring-primary/10'} text-foreground focus:outline-none focus:ring-4 transition-all`}
                       placeholder="John Doe"
@@ -134,7 +134,7 @@ export default function Contact() {
                   </div>
                   <div>
                     <label className="block text-sm font-semibold text-foreground mb-2">Email Address *</label>
-                    <input 
+                    <input
                       {...register("email")}
                       type="email"
                       className={`w-full px-4 py-3 rounded-xl bg-background border-2 ${errors.email ? 'border-red-400 focus:ring-red-100' : 'border-border focus:border-primary focus:ring-primary/10'} text-foreground focus:outline-none focus:ring-4 transition-all`}
@@ -147,7 +147,7 @@ export default function Contact() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <label className="block text-sm font-semibold text-foreground mb-2">Phone Number</label>
-                    <input 
+                    <input
                       {...register("phone")}
                       className="w-full px-4 py-3 rounded-xl bg-background border-2 border-border focus:border-primary focus:ring-primary/10 focus:outline-none focus:ring-4 transition-all text-foreground"
                       placeholder="+91 ..."
@@ -155,7 +155,7 @@ export default function Contact() {
                   </div>
                   <div>
                     <label className="block text-sm font-semibold text-foreground mb-2">Company / Organization</label>
-                    <input 
+                    <input
                       {...register("company")}
                       className="w-full px-4 py-3 rounded-xl bg-background border-2 border-border focus:border-primary focus:ring-primary/10 focus:outline-none focus:ring-4 transition-all text-foreground"
                       placeholder="Healthcare Ltd."
@@ -165,7 +165,7 @@ export default function Contact() {
 
                 <div>
                   <label className="block text-sm font-semibold text-foreground mb-2">Your Message *</label>
-                  <textarea 
+                  <textarea
                     {...register("message")}
                     rows={5}
                     className={`w-full px-4 py-3 rounded-xl bg-background border-2 ${errors.message ? 'border-red-400 focus:ring-red-100' : 'border-border focus:border-primary focus:ring-primary/10'} text-foreground focus:outline-none focus:ring-4 transition-all resize-y`}

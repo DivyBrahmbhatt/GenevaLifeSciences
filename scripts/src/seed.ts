@@ -2,409 +2,418 @@ import { db } from "@workspace/db";
 import { categoriesTable, productsTable } from "@workspace/db/schema";
 
 const categories = [
-  { name: "Prefilled Syringes", slug: "prefilled-syringes", description: "Ready-to-use prefilled syringes for precise dosing across therapeutic areas." },
-  { name: "Ophthalmic (Eye) Preparations", slug: "ophthalmic", description: "Sterile formulations for ocular conditions including eye drops, gels, and ointments." },
-  { name: "Otic (Ear) Preparations", slug: "otic", description: "Specialized ear drops and solutions for treating ear infections and conditions." },
-  { name: "Cephalosporin", slug: "cephalosporin", description: "Beta-lactam antibiotics for a broad range of bacterial infections." },
-  { name: "Ointments & Creams", slug: "ointments-creams", description: "Topical formulations for skin conditions, inflammation, and infection management." },
-  { name: "Cream", slug: "cream", description: "Water-based topical preparations for dermatological and cosmetic applications." },
-  { name: "Mouthwash", slug: "mouthwash", description: "Antiseptic and therapeutic oral rinses for oral hygiene and health." },
-  { name: "Toothpaste", slug: "toothpaste", description: "Fluoride and medicated toothpastes for dental care and oral protection." },
-  { name: "Lotion", slug: "lotion", description: "Liquid-based topical preparations for moisturizing, soothing, and treating skin." },
-  { name: "Musculoskeletal Disorders", slug: "musculoskeletal", description: "Medications targeting muscle, joint, and skeletal disorders including pain management." },
-  { name: "Neuromuscular Blockade", slug: "neuromuscular-blockade", description: "Agents used in anesthesia and critical care for neuromuscular blockade." },
-  { name: "Endocrine System", slug: "endocrine", description: "Hormonal and endocrine modulators for thyroid, diabetes, and metabolic conditions." },
-  { name: "Respiratory", slug: "respiratory", description: "Bronchodilators, corticosteroids, and mucolytics for respiratory disorders." },
-  { name: "Antimalarial", slug: "antimalarial", description: "Prophylaxis and treatment agents for malaria and related parasitic infections." },
+  { name: "Injectables", slug: "injectables", description: "Various injectable pharmaceutical formulations." },
+  { name: "Tablet/capsules", slug: "tablet-capsules", description: "Solid oral dosage forms including tablets and capsules." },
+  { name: "APIs(Active Pharmaceutical Ingredients)", slug: "apis", description: "Active Pharmaceutical Ingredients for pharmaceutical manufacturing." },
 ];
 
-type CategoryRow = { id: number; slug: string };
+const injectablesRaw = `Cardiovascular System	Antihypertensive	Propranolol	1mg/ml
+Cardiovascular System	Antihypertensive	Enalapril	1.25mg/ml
+Cardiovascular System	Antihypertensive	Esmolol	10mg/ml, 10ml & 250mg/ml, 10ml
+Cardiovascular System	Antihypertensive	Metoprolol	1mg/ml-5ml, 5mg/5ml
+Cardiovascular System	Antihypertensive	Clonidine	100mcg/ml, 150mcg/ml, 1ml
+Cardiovascular System	Antihypertensive	Phenoxybenzamine	50mg/ml
+Cardiovascular System	Antihypertensive	Labetalol	100mg/20ml, 20mg/4ml
+Cardiovascular System	Antihypertensive	Sodium Nitroprusside	50mg/5ml
+Cardiovascular System	Coagulants	Protamine Sulphate	50mg/ 5ml
+Cardiovascular System	Coagulants	Aminocaproic	5gm/20ml, 250mg/ml
+Cardiovascular System	Coagulants	Aprotinin	100000 KIU, 500000 KIU
+Cardiovascular System	Coagulants	Etamsylate	250mg/ 2ml
+Cardiovascular System	Coagulants	Methyl Ergometrine	0.2mg/ml, 1ml
+Cardiovascular System	Coagulants	Filgrastim injection	300mcg/0.5ml
+Cardiovascular System	Coagulants	Furosemide injection bp	10mg/ml
+Cardiovascular System	Coagulants	Phytonadione Injection	10mg/1ml, 2mg/0.2ml
+Cardiovascular System	Coagulants	Amplsoxsuprine HCl injection USP	10mg/ml
+Cardiovascular System	Coagulants	Nitroglycerine injection USP	5mg/ml
+Cardiovascular System	Coagulants	Norepinephrine bitartrate Injection BP	4mg/2ml
+Cardiovascular System	Anti-Anginal	Nicorandil	2mg
+Cardiovascular System	Anti-Anginal	Glyceryl Trinitrate Nitroglycerine	10mg/10ml, 25mg/5ml, 50mg/10ml
+Cardiovascular System	Anti-Anginal	Verapamil	5mg/2ml
+Cardiovascular System	Anti-Anginal	Diltiazem	25mg/5ml
+Cardiovascular System	Anti-Arrhythmic Agent	Procainamide	100mg/ml
+Cardiovascular System	Anti-Arrhythmic Agent	Amiodarone	150mg/3ml
+Cardiovascular System	Anti-Arrhythmic Agent	Adenosine	6mg/2ml
+Cardiovascular System	Anticholinergics	Atropine Sulphate	0.6mg/ml 1 ml amp
+Cardiovascular System	Anticholinergics	Atropine Sulphate	0.6mg/ml 10 ml vial
+Cardiovascular System	Diuretics	Torsemide	10mg/ml
+Cardiovascular System	Diuretics	Frusemide	10mg/ml, 2ml, 4ml & 25ml
+Cardiovascular System	Vasodilators	Alprostadil	20mcg/ml, 1ml & 500mcg/ml, 1ml
+Cardiovascular System	Vasodilators	Pentoxifylline	20mg/ml
+Cardiovascular System	Anti-Platelets	Eptifibatide	20mg, 75mg
+Cardiovascular System	Anti-Platelets	Tranexamic Acid	500mg/ 5ml
+Cardiovascular System	Cardiac Shock & Failure	Milrinone	10mg, 20mg, 50mg
+Cardiovascular System	Cardiac Shock & Failure	Amrinone	100mg/20ml
+Cardiovascular System	Cardiac Shock & Failure	Dobutamine	50mg/4ml, 250mg/20ml
+Cardiovascular System	Cardiac Shock & Failure	Levosimendan	12.5mg/ml
+Cardiovascular System	Cardiac Shock & Failure	Isoprenaline	200mcg/ml, 1ml
+Cardiovascular System	Cardiac Shock & Failure	Dopamine	40mg/ml
+Cardiovascular System	Cardiac Shock & Failure	Noradrenaline bitartrate 2 mg	2ml
+Cardiovascular System	Cardiac Shock & Failure	Digoxin	0.5mg/2ml
+Cardiovascular System	Anti-Coagulants	Nadroparin	3075IU, 4100IU, 6450IU, 8600IU
+Cardiovascular System	Anti-Coagulants	Heparin	5000IU/5ml & 25000IU/5ml
+Cardiovascular System	Thrombolytics	Urokinase	2,50,000 IU, 500000 IU, 750000 IU, 10,00,000 IU
+Cardiovascular System	Thrombolytics	Streptokinase	750000 IU, 1500000 IU
+Antibiotic/Anti-Infectives	General	Acyclovir Sodium	250mg, 500mg, And 25mg/ml
+Antibiotic/Anti-Infectives	General	Fosfomycin	80mg/2ml, 10mg/2ml, 20mg/2ml, 160mg/2ml
+Antibiotic/Anti-Infectives	General	Azithromycin	250mg, 500mg, 1g
+Antibiotic/Anti-Infectives	General	Ganciclovir	500mg
+Antibiotic/Anti-Infectives	General	Kanamycin	500mg, 1g
+Antibiotic/Anti-Infectives	General	Lincomycin	300mg, 1ml
+Antibiotic/Anti-Infectives	General	Amikacin	100mg/2ml, 250mg/2ml, 500mg/2ml, 1g
+Antibiotic/Anti-Infectives	General	Netilmicin Sulphate	10mg/ml, 25mg/ml, 50mg/ml, 100mg/ml
+Antibiotic/Anti-Infectives	General	Clindamycin Phosphate	300mg, 600mg
+Antibiotic/Anti-Infectives	General	Polymyxin B	500000 IU
+Antibiotic/Anti-Infectives	General	Streptomycin	0.75g, 1g
+Antibiotic/Anti-Infectives	General	Tobramycin Sulphate	80mg/2ml
+Antibiotic/Anti-Infectives	General	Spectinomycin HCL	1g, 2g
+Antibiotic/Anti-Infectives	General	Telcoplanin	200mg, 400mg
+NSAIDs	Anti-Inflammatory/Allergics/Anti-Histamine	Lornoxicam	8mg
+NSAIDs	Anti-Inflammatory/Allergics/Anti-Histamine	Hydrocortisone Sodium Succinate	1mg, 200mg, 500mg
+NSAIDs	Anti-Inflammatory/Allergics/Anti-Histamine	Dexamethasone Sodium Phosphate	4mg/ml, 1ml & 2ml, 10ml, 30ml
+NSAIDs	Anti-Inflammatory/Allergics/Anti-Histamine	Indomethacin	1mg
+NSAIDs	Anti-Inflammatory/Allergics/Anti-Histamine	Triamcinolone Acetonide	40mg/ml
+NSAIDs	Anti-Inflammatory/Allergics/Anti-Histamine	Betamethasone	6mg/ml
+NSAIDs	Anti-Inflammatory/Allergics/Anti-Histamine	Diphenhydramine HCL	50mg/ml
+NSAIDs	Anti-Inflammatory/Allergics/Anti-Histamine	Ademetionine Butanedisulfonate	500mg
+NSAIDs	Anti-Inflammatory/Allergics/Anti-Histamine	Di. Sodium E.D.T.A 150 mg	50ml, 100ml
+NSAIDs	Anti-Inflammatory/Allergics/Anti-Histamine	Pheniramine Maleate 22.75mg/ml	2ml, 10ml, 30ml
+NSAIDs	Anti-Inflammatory/Allergics/Anti-Histamine	Dimenhydrinate	5ml
+NSAIDs	Analgesic/Antipyretic	Ketoprofen	100mg/2ml, 100mg/5ml
+NSAIDs	Analgesic/Antipyretic	Metamizole	1gm/2ml, 30ml
+NSAIDs	Analgesic/Antipyretic	Piroxicam	0mg/ml, 1ml
+NSAIDs	Analgesic/Antipyretic	Ketorolac tromethamine	60mg/2ml, 30mg/ml, 1ml
+NSAIDs	Analgesic/Antipyretic	Aceclofenac	150mg/ml, 1ml
+NSAIDs	Analgesic/Antipyretic	Paracetamol	75mg/ml, 2ml, 150mg/ml, 10ml, 10mg/ml, 50ml
+NSAIDs	Analgesic/Antipyretic	Tramadol hydrochloride	50mg/ml, 1ml, 2ml
+NSAIDs	Analgesic/Antipyretic	Lysine acetylsalicylate	0.9g, 1.8g
+Anti-Ulcerants/Antacid/Anti-Emetics/Laxatives	General	Famotidine	20mg/ 2ml, 200mg/ 20ml
+Anti-Ulcerants/Antacid/Anti-Emetics/Laxatives	General	Dicyclomine	10mg/ml, 2ml, 20mg/ 2ml, 2ml, 100mg/ml
+Anti-Ulcerants/Antacid/Anti-Emetics/Laxatives	General	Esomeprazole	40mg
+Anti-Ulcerants/Antacid/Anti-Emetics/Laxatives	General	Hyoscine Butylbromide	20mg/ml, 1ml
+Anti-Ulcerants/Antacid/Anti-Emetics/Laxatives	General	Metadoxine	60mg/5ml
+Anti-Ulcerants/Antacid/Anti-Emetics/Laxatives	General	Metoclopramide	10mg/2ml
+Anti-Ulcerants/Antacid/Anti-Emetics/Laxatives	General	L-Ornithine L-Aspartate	5mg/10ml
+Anti-Ulcerants/Antacid/Anti-Emetics/Laxatives	General	Omeprazole	40mg
+Anti-Ulcerants/Antacid/Anti-Emetics/Laxatives	General	Cimetidine	100mg/ml, 2ml
+Anti-Ulcerants/Antacid/Anti-Emetics/Laxatives	General	Pantoprazole	40mg
+Anti-Ulcerants/Antacid/Anti-Emetics/Laxatives	General	Ranitidine	50mg/2ml, 10ml, 30ml
+Anti-Ulcerants/Antacid/Anti-Emetics/Laxatives	General	Lansoprazole	30mg
+Anti-Ulcerants/Antacid/Anti-Emetics/Laxatives	General	Ondansetron	2mg/ml-2ml, 4 mg/ml-2 ml, 10ml, 30ml
+Anti-Ulcerants/Antacid/Anti-Emetics/Laxatives	General	Palonosetron HCL	0.25mg/5ml
+Anti-Ulcerants/Antacid/Anti-Emetics/Laxatives	General	Metoclopramide HCL 5 mg	2ml, 10ml, 30ml
+Anti-Ulcerants/Antacid/Anti-Emetics/Laxatives	General	Granisetron	1mg/1ml, 1mg/5ml, 3mg/ml, 4mg/ml
+Anti-Malarial	General	Quinine Dihydrochloride	100mg/ml, 2ml, 250mg/2ml, 300mg/ml, 1ml & 2ml, 400mg/4ml
+Anti-Malarial	General	Artemether	20mg/ml, 80mg, 150mg/2ml
+Anti-Malarial	General	Artesunate	30mg, 60mg, 120mg, 180mg, 150mg & 240mg
+Anti-Malarial	General	Chloroquine Phosphate	40mg, 64.5mg
+Anti-Malarial	General	Chloroquine 40mg/ml	30ml, 5ml
+Anti-Malarial	General	α - βArteether	75mg, 150mg
+Anaesthetics	General	Bupivacaine+ Dextrose	5mg, 80mg, 4ml
+Anaesthetics	General	Bupivacaine 0.5%	4ml, 10ml, 20ml
+Anaesthetics	General	Lignocaine + Adrenaline	60mg + 180mg/30ml
+Anaesthetics	General	Ketamine Hydrochloride	10mg/ml, 20ml, 50mg/ml, 10ml
+Anaesthetics	General	Lidocaine HCL + Epinephrine	36mg + 0.0225mg
+Anaesthetics	General	Lidocaine	1%, 5ml, 2%, 20ml, 30ml, 50ml
+Anaesthetics	General	Atracurium	10mg/ml, 2.5ml, 10mg/ml, 5ml
+Anaesthetics	General	Succinylcholine Chloride	50mg/2ml, 10ml, 200mg
+Anaesthetics	General	Pancuronium	4mg/2ml
+Anaesthetics	General	Droperidol	2.5mg, 5mg
+Anaesthetics	General	Thiopentone Sodium	500mg, 1g
+Antidotes	General	Dimercaprol	50mg/ml 2ml
+Antidotes	General	Pralidoxime Chloride	200mg, 500mg/20ml
+Musculo-Skeletal Disorder	General	Pipecuronium Bromide	2mg/ml
+Musculo-Skeletal Disorder	General	Diclofenac Sodium	75mg/3ml
+Musculo-Skeletal Disorder	General	Meloxicam	15mg/1.5ml
+Musculo-Skeletal Disorder	General	Drotaverine	20mg/ml, 2ml
+Musculo-Skeletal Disorder	General	Parecoxib	40mg/2ml
+Musculo-Skeletal Disorder	General	Ibuprofen	5mg/ml, 2ml
+Musculo-Skeletal Disorder	General	Thiocolchicoside	4mg/2ml
+Neuromuscular Blockade	General	Sugammadex	100mg/ml, 2ml & 5ml
+Muscle Relaxant	General	Tolperisone Hydrochloride & Lidocaine	100mg + 2.5mg, 1ml
+Muscle Relaxant	General	Vecuronium Bromide	4mg, 10mg, 20mg
+Muscle Relaxant	General	Rocuronium Bromide	10mg/ml, 5ml
+Muscle Relaxant	General	Glycopyrrolate	200mcg/ml 1ml & 3ml
+Muscle Relaxant	General	Dantrolene	20mg
+Endocrine System	General	Methylprednisolone Acetate	40mg/ml
+Endocrine System	General	Terlipressin	1mg/10ml
+Endocrine System	General	Vasopressin	10Units, 20Units, 40Units
+Endocrine System	General	Levothyroxine Injection	200mcg/ml, 1ml
+Endocrine System	General	Methylprednisolone Sodium Succinate Powder	20mg, 40mg, 120mg, 125mg, 500mg, 1g
+Endocrine System	General	Octreotide	50mcg/ml, 1ml & 100mcg/ml, 1ml
+Endocrine System	General	Somatostatin	3000mcg, 250mcg
+Endocrine System	General	Desmopressin	2.5ml, 4mcg/ml
+Hepatic Stimulant	General	Essential Phospholipids	250mg/5ml
+Respiratory	General	Caffeine Citrate	10mg/ml, 1ml & 2ml, 20mg/ml, 1ml & 2ml
+Respiratory	General	Aminophylline	250mg/10ml
+Respiratory	General	Ambroxol HCL	15mg/2ml
+Respiratory	General	Etofylline + Theophylline	2ml
+Respiratory	General	Bromhexine HCL	4mg/2ml
+Available On Request	General	2-Pyridine Aldoxime Methiodide 25 mg/ml	20 ml amp
+Available On Request	General	Methyl Ergometrine maleate	1 ml amp
+Available On Request	General	Sod. Ascorbate IP	20ml, 50ml
+Available On Request	General	Adrenochrome Monosemicarabzone 5mg	10 ml vial
+Pre-Filled Syringe	Container Type: 0.6ml	Enoxaparin Sodium Injection Ip	60mg
+Pre-Filled Syringe	Container Type: 5ml	Dobutamine Injection USP	50mg/ml
+Pre-Filled Syringe	Container Type: 5ml	Dopamine Hydrochloride Injection USP	40mg/ml
+Pre-Filled Syringe	Container Type: 1ml & 5ml	Heparin Injection BP	5000IU
+Pre-Filled Syringe	Container Type: 1ml & 5ml	Heparin Injection Bp	1000IU
+Pre-Filled Syringe	Container Type: 2ml	Adenosine Injection USP	3mg
+Pre-Filled Syringe	Container Type: 4ml	Sterile Noradrenaline Concentrate Bp	2mg
+Pre-Filled Syringe	Container Type: 1ml	Glycopyrrolate Injection USP	0.2mg
+Pre-Filled Syringe	Container Type: 5ml	Neostigmine Injection	0.5mg
+Pre-Filled Syringe	Container Type: 5ml	Tranexamic Acid Injection Bp	100mg
+Pre-Filled Syringe	Container Type: 1ml, 2ml, 4ml & 5ml	Oxytocin Injection Bp	5IU
+Pre-Filled Syringe	Container Type: 5ml	Iron Sucrose Injection Bp	20mg
+Pre-Filled Syringe	Container Type: 3ml	Vitamin B1, B6 & B12 Injection	---
+Pre-Filled Syringe	Container Type: 2ml	Sodium Hyaluronate Injection	1.0W/V
+Pre-Filled Syringe	Container Type: 1ml, 2ml, 5ml & 10ml	Sodium Chloride Injection Usp	9mg
+Pre-Filled Syringe	Container Type: 1ml, 2ml, 5ml & 10ml	Sterilized Water for Injection Bp	---
+Pre-Filled Syringe	Container Type: 4ml	Labetalol Injection Bp	5mg
+Pre-Filled Syringe	Container Type: 1, 2, 3, 5 ml	Granisetron Hydrochloride Injection USP	1mg
+Pre-Filled Syringe	Container Type: 2ml	Isoxsuprine Hydrochloride Injection	5mg
+Pre-Filled Syringe	Container Type: 2ml, 4ml	Clindamycin Injection USP	150mg
+Pre-Filled Syringe	Container Type: 2ml, 30ml	Methylcobalamin & Multivitamin Injection	1000mcg
+Pre-Filled Syringe	Container Type: 1ml	Terbutaline	0.5 mg
+Pre-Filled Syringe	Container Type: 2ml	HydroxypropylMethylcellulose Ophthalmic Solution USP	2% W/V
+Pre-Filled Syringe	Container Type: 0.25ml	Di. Sod. E.D.T. A	37.5mg
+Pre-Filled Syringe	Container Type: 2ml	Pancuronium Injection BP	2mg
+Pre-Filled Syringe	Container Type: 2ml	Torsemide Injection	10mg
+Liquid Inhalation Anesthesia	General	Sevoflurane	50ml, 250ml
+Liquid Inhalation Anesthesia	General	Isoflurane	30ml, 100ml, 250ml
+Liquid Inhalation Anesthesia	General	Adrenaline (Ephinephrine)	1ml
+Liquid Inhalation Anesthesia	General	Halothane	250ml
+B- Lactam Antibiotics	Penicillin	Tobramycin	40mg, ml
+B- Lactam Antibiotics	Penicillin	Benzathinepenicillin	600Mn IU, 1.2Mn IU
+B- Lactam Antibiotics	Penicillin	Ampicillin Sodium	100mg, 250mg, 500mg, 1g
+B- Lactam Antibiotics	Penicillin	Ampicillin + Cloxacillin	250mg, 500mg
+B- Lactam Antibiotics	Penicillin	Ampicillin + Sulbactam	750mg + 250mg, 1g + 500mg, 2g + 1g
+B- Lactam Antibiotics	Penicillin	Ticarcillin + clavulanic Acid	1.6g, 3.1g
+B- Lactam Antibiotics	Penicillin	Timentin & Clavulanate Potassium Injection	3gm + 0.2g/1.5 + 0.1
+B- Lactam Antibiotics	Penicillin	Cloxacillin Sodium	250mg, 500mg, 1g
+B- Lactam Antibiotics	Penicillin	Oxacillin Sodium	500mg, 1g
+B- Lactam Antibiotics	Penicillin	Amoxycillin	250mg, 500mg, 1g
+B- Lactam Antibiotics	Penicillin	Flucloxacillin Sodium	250mg, 500mg, & 1gm
+B- Lactam Antibiotics	Penicillin	Piperacillin	1g, 2g, 4g
+B- Lactam Antibiotics	Penicillin	Amoxicillin + Clavulanate Potassium	0.3g, 0.6g, 1.2g & 2.4g
+B- Lactam Antibiotics	Penicillin	Piperacillin Sodium + Tazobactam Sodium	2.25g, 4.5g
+B- Lactam Antibiotics	Penicillin	Oxytetracycline	50mg/ml
+B- Lactam Antibiotics	Cephalosporin	Cefuroxime & Tazobactam	1.125gm
+B- Lactam Antibiotics	Cephalosporin	Cefalotin	1g, 1.5g, 2g
+B- Lactam Antibiotics	Cephalosporin	Cefpirome	250mg, 500mg, 1g, 2g
+B- Lactam Antibiotics	Cephalosporin	Cefepime	250mg, 500mg, 1g, 2g
+B- Lactam Antibiotics	Cephalosporin	Cefpirome+sulbactam	750mg, 1.5g, 3g
+B- Lactam Antibiotics	Cephalosporin	Cefixime + Sulbactam	750mg, 1.5g, 3g
+B- Lactam Antibiotics	Cephalosporin	Cephaloridine	500mg, 1g
+B- Lactam Antibiotics	Cephalosporin	Ceftazidime + Tazobactam	500mg + 62.5mg, 1g + 125mg
+B- Lactam Antibiotics	Cephalosporin	Ceftazidime	250mg, 1g, 2g
+B- Lactam Antibiotics	Cephalosporin	Cefmetazole	500mg, 1g, 2g
+B- Lactam Antibiotics	Cephalosporin	Cefepime + Tazobactam	1g + 125mg, 500 + 62.5mg
+B- Lactam Antibiotics	Cephalosporin	Ceftriaxone	125mg, 250mg, 500mg, 1g, 2g
+B- Lactam Antibiotics	Cephalosporin	Cefoperazone + Sulbactam	500mg, 1.5g, 2g
+B- Lactam Antibiotics	Cephalosporin	Cefoperazone	500mg, 1000mg, 1g
+B- Lactam Antibiotics	Cephalosporin	Cefotaxime + Sulbactam	750mg, 1g, 1.5g
+B- Lactam Antibiotics	Cephalosporin	Cefotaxime	250mg, 500mg, 1g, 2g
+B- Lactam Antibiotics	Cephalosporin	Ceftriaxone+sulbactam	500mg, 750mg, 1g, 1.5g
+B- Lactam Antibiotics	Cephalosporin	Ceftriaxone + Tazobactam	1.125g, 2.250g
+B- Lactam Antibiotics	Cephalosporin	Ceftizoxime	500mg, 1g, 2g
+B- Lactam Antibiotics	Cephalosporin	Cefuroxime	250mg, 750mg, 1.5g
+B- Lactam Antibiotics	Cephalosporin	Cefoxitin	1g, 2g, 10g
+B- Lactam Antibiotics	Cephalosporin	Cefotetan	1g, 10g
+B- Lactam Antibiotics	Cephalosporin	Cefamandole Nafate	1gm
+B- Lactam Antibiotics	Cephalosporin	Ceftazidime + Sulbactam	750mg, 1.5gm
+B- Lactam Antibiotics	Cephalosporin	Cefodizime	500mg, 1g, 2g
+B- Lactam Antibiotics	Cephalosporin	Ceftazidime + Avibactam	2.5gm
+B- Lactam Antibiotics	Cephalosporin	Cefazolin	125mg, 250mg, 500mg, 1g
+B- Lactam Antibiotics	Cephalosporin	Cefotiam HCL	500mg, 1g
+B- Lactam Antibiotics	Cephalosporin	Cefbuperazone	500mg, 1g
+B- Lactam Antibiotics	Cephalosporin	Cefpiramide	500mg, 1g, 2g
+B- Lactam Antibiotics	Cephalosporin	Cephalothin	1gm, 1.5gm, 2gm
+B- Lactam Antibiotics	Cephalosporin	Cefuzonam	250mg, 500mg, 1g
+B- Lactam Antibiotics	Monobactam	Sulbactam	500mg, 1g, 2gm
+B- Lactam Antibiotics	Monobactam	Aztreonam & Avibactam	--
+B- Lactam Antibiotics	Monobactam	Aztreonam	250mg, 500mg, 1g, 2g
+B- Lactam Antibiotics	Carbapenems	Meropenem	500mg, 1g, 2g
+B- Lactam Antibiotics	Carbapenems	Biapenem	0.3g
+B- Lactam Antibiotics	Carbapenems	Ertapenem	1g
+B- Lactam Antibiotics	Carbapenems	Doripenem	500mg, 1g
+B- Lactam Antibiotics	Carbapenems	Meropenem + Tazobactam	562.5mg + 1.125g
+B- Lactam Antibiotics	Carbapenems	Meropenem + Sulbactam	250mg + 125mg, 500mg + 250mg, 1g + 500mg
+B- Lactam Antibiotics	Carbapenems	Imipenem + Cilastatin	250mg + 250mg, 500mg + 500mg
+General Dry Injectables	General	Anidulafungin For Injection 50 Mg	50mg, 100mg
+General Dry Injectables	General	Aztreonam Injection	500mg, 1000mg, 2000mg
+General Dry Injectables	General	For Injection 50 Caspofungin Mg	50mg, 70mg
+General Dry Injectables	General	Clarithromycin Injection	500mg
+General Dry Injectables	General	Colistimethate Sodium Injection	1,000,000 IU, 2,00,0000 IU, 5,00,0000 IU
+General Dry Injectables	General	Doxycycline For Injection USP	10mg
+General Dry Injectables	General	Hydrocortisone Sodium Succinate Injection	100mg, 200mg
+General Dry Injectables	General	Micafungin Sodium for Injection	100mg
+General Dry Injectables	General	Rabeprazole Injection	20mg
+General Dry Injectables	General	Teicoplanin Injection	200mg, 400mg
+General Dry Injectables	General	Ulinastatin For Injection 1,00,000 Iu	50,000 IU, 1,00,000 IU
+General Dry Injectables	General	Chloramphenicol Sodium Succinate Injection	1.0gm
+General Dry Injectables	General	Azithromycin For Infusion Bp	500mg
+General Dry Injectables	General	Ganciclovir Injection	500mg
+Dental Cartridge 1.8ml	General	Articaine 4% And Adrenaline 1:100,000 Injection	(Arthil-4%)
+Dental Cartridge 1.8ml	General	Lidocaine Hydrochloride Injection B	(Jetlox-2%)
+Dental Cartridge 1.8ml	General	Mepivacaine Hydrochloride Injection 3%	(Mephil-3%)
+Dental Cartridge 1.8ml	General	Lignocaine Hydrochloride and Adrenaline Injection BP	(Jetlox-2% A)
+Dental Cartridge 1.8ml	General	Mepivacaine Hydrochloride 36.00 Mg (3%) + Noradrenaline Tartrate 0.036 Mg	(Corresponding Amount in Noradrenaline 0.018 Mg)
+Dental Cartridge 1.8ml	General	Mepivacaine Hydrochloride 2%	---
+Dental Cartridge 1.8ml	General	Mepivacaine Hydrochloride 36.00 Mg (3%) + ADRENALINE 0.018 Mg	---
+Dental Cartridge 1.8ml	General	Lignocaine HCL 24.64 Mg/Ml. (2%) + Adrenaline 0.01mg/Ml. (1:80,000)	---
+`;
 
-const productsByCategorySlug: Record<string, Array<{
-  name: string;
-  description: string;
-  specifications?: string;
-  applications?: string;
-  genericName?: string;
-  strength?: string;
-  containerType?: string;
-  isPrefillSyringe?: boolean;
-}>> = {
-  "prefilled-syringes": [
-    {
-      name: "Enoxaparin Sodium 40mg/0.4mL Prefilled Syringe",
-      genericName: "Enoxaparin Sodium",
-      strength: "40mg/0.4mL",
-      containerType: "Prefilled Syringe",
-      isPrefillSyringe: true,
-      description: "A low molecular weight heparin used for prevention and treatment of deep vein thrombosis (DVT) and pulmonary embolism.",
-      specifications: "Each syringe contains Enoxaparin Sodium 40mg in 0.4mL solution. pH: 5.5–7.5. Sterile, preservative-free.",
-      applications: "DVT prophylaxis post-surgery, treatment of acute coronary syndromes, prevention of clotting in dialysis circuits.",
-    },
-    {
-      name: "Enoxaparin Sodium 60mg/0.6mL Prefilled Syringe",
-      genericName: "Enoxaparin Sodium",
-      strength: "60mg/0.6mL",
-      containerType: "Prefilled Syringe",
-      isPrefillSyringe: true,
-      description: "Higher-dose low molecular weight heparin for treatment of established DVT and pulmonary embolism.",
-      specifications: "Each syringe contains Enoxaparin Sodium 60mg in 0.6mL solution. Sterile, single-use.",
-      applications: "Treatment of DVT with or without pulmonary embolism, unstable angina management.",
-    },
-    {
-      name: "Enoxaparin Sodium 80mg/0.8mL Prefilled Syringe",
-      genericName: "Enoxaparin Sodium",
-      strength: "80mg/0.8mL",
-      containerType: "Prefilled Syringe",
-      isPrefillSyringe: true,
-      description: "High-dose enoxaparin for acute management of thrombotic conditions.",
-      specifications: "Each syringe contains Enoxaparin Sodium 80mg in 0.8mL. Single-dose, sterile.",
-      applications: "Treatment of acute coronary syndrome, DVT management.",
-    },
-    {
-      name: "Enoxaparin Sodium 100mg/1mL Prefilled Syringe",
-      genericName: "Enoxaparin Sodium",
-      strength: "100mg/1mL",
-      containerType: "Prefilled Syringe",
-      isPrefillSyringe: true,
-      description: "Full-dose low molecular weight heparin for comprehensive anticoagulant therapy.",
-      specifications: "Each syringe contains Enoxaparin Sodium 100mg in 1mL. Sterile, preservative-free.",
-      applications: "Anticoagulation during pregnancy, acute DVT treatment, ACS management.",
-    },
-    {
-      name: "Methotrexate 7.5mg/0.15mL Prefilled Syringe",
-      genericName: "Methotrexate",
-      strength: "7.5mg/0.15mL",
-      containerType: "Prefilled Syringe",
-      isPrefillSyringe: true,
-      description: "Disease-modifying antirheumatic drug (DMARD) for rheumatoid arthritis and psoriasis.",
-      specifications: "Each syringe contains Methotrexate 7.5mg. Sterile aqueous solution.",
-      applications: "Rheumatoid arthritis, juvenile idiopathic arthritis, plaque psoriasis.",
-    },
-    {
-      name: "Methotrexate 15mg/0.3mL Prefilled Syringe",
-      genericName: "Methotrexate",
-      strength: "15mg/0.3mL",
-      containerType: "Prefilled Syringe",
-      isPrefillSyringe: true,
-      description: "Moderate-dose methotrexate for DMARD therapy in autoimmune conditions.",
-      specifications: "Each syringe contains Methotrexate 15mg in 0.3mL. Sterile single-use.",
-      applications: "Rheumatoid arthritis dose escalation, psoriatic arthritis.",
-    },
-    {
-      name: "Adalimumab 40mg/0.8mL Prefilled Syringe",
-      genericName: "Adalimumab",
-      strength: "40mg/0.8mL",
-      containerType: "Prefilled Syringe",
-      isPrefillSyringe: true,
-      description: "TNF-alpha inhibitor biologic for autoimmune and inflammatory conditions.",
-      specifications: "Each syringe contains Adalimumab 40mg in 0.8mL. pH: 5.2. Refrigerated storage required.",
-      applications: "Rheumatoid arthritis, plaque psoriasis, Crohn's disease, ankylosing spondylitis.",
-    },
-    {
-      name: "Erythropoietin 4000 IU/mL Prefilled Syringe",
-      genericName: "Erythropoietin",
-      strength: "4000 IU/mL",
-      containerType: "Prefilled Syringe",
-      isPrefillSyringe: true,
-      description: "Recombinant erythropoietin for treatment of anemia associated with chronic kidney disease.",
-      specifications: "Each syringe contains Erythropoietin 4000 IU/mL. Sterile, single-use pre-filled.",
-      applications: "Anemia of chronic kidney disease, chemotherapy-induced anemia.",
-    },
-    {
-      name: "Insulin Glargine 100 IU/mL Prefilled Syringe",
-      genericName: "Insulin Glargine",
-      strength: "100 IU/mL",
-      containerType: "Prefilled Syringe",
-      isPrefillSyringe: true,
-      description: "Long-acting insulin analog for once-daily basal insulin therapy in diabetes mellitus.",
-      specifications: "Each syringe contains Insulin Glargine 100 IU/mL. pH: 4.0. Clear colorless solution.",
-      applications: "Type 1 diabetes mellitus, Type 2 diabetes requiring basal insulin.",
-    },
-    {
-      name: "Dalteparin 5000 IU Prefilled Syringe",
-      genericName: "Dalteparin Sodium",
-      strength: "5000 IU/0.2mL",
-      containerType: "Prefilled Syringe",
-      isPrefillSyringe: true,
-      description: "Low molecular weight heparin for DVT prophylaxis in surgical and medical patients.",
-      specifications: "Each syringe contains Dalteparin Sodium 5000 anti-Xa IU in 0.2mL. Sterile.",
-      applications: "DVT prophylaxis, extended VTE treatment in cancer patients.",
-    },
-  ],
-  "ophthalmic": [
-    {
-      name: "Timolol Maleate 0.5% Eye Drops",
-      description: "Beta-blocker ophthalmic solution for reduction of intraocular pressure in glaucoma.",
-      specifications: "Each mL contains Timolol Maleate equivalent to Timolol 5mg. Sterile isotonic solution.",
-      applications: "Open-angle glaucoma, ocular hypertension management.",
-    },
-    {
-      name: "Ciprofloxacin 0.3% Ophthalmic Solution",
-      description: "Fluoroquinolone antibiotic eye drops for bacterial conjunctivitis and corneal ulcers.",
-      specifications: "Each mL contains Ciprofloxacin HCl 3mg. Sterile, buffered ophthalmic solution.",
-      applications: "Bacterial conjunctivitis, corneal ulcers caused by susceptible organisms.",
-    },
-    {
-      name: "Dexamethasone 0.1% Ophthalmic Suspension",
-      description: "Corticosteroid eye drops for ocular inflammatory conditions.",
-      specifications: "Contains Dexamethasone 0.1% w/v. Sterile ophthalmic suspension.",
-      applications: "Post-operative ocular inflammation, allergic conjunctivitis, uveitis.",
-    },
-    {
-      name: "Latanoprost 0.005% Eye Drops",
-      description: "Prostaglandin analog for first-line treatment of open-angle glaucoma.",
-      specifications: "Contains Latanoprost 0.005% w/v. Requires refrigeration before opening.",
-      applications: "Open-angle glaucoma, ocular hypertension.",
-    },
-  ],
-  "otic": [
-    {
-      name: "Ciprofloxacin 0.2% Otic Solution",
-      description: "Antibacterial ear drops for treatment of acute otitis externa and chronic suppurative otitis media.",
-      specifications: "Contains Ciprofloxacin HCl 2mg/mL. Sterile otic solution, pH 4.5–5.0.",
-      applications: "Acute otitis externa, chronic suppurative otitis media with perforated tympanic membrane.",
-    },
-    {
-      name: "Clotrimazole 1% Ear Drops",
-      description: "Antifungal ear drops for otomycosis and fungal outer ear infections.",
-      specifications: "Contains Clotrimazole 1% w/v in propylene glycol base. Sterile.",
-      applications: "Otomycosis (fungal otitis externa), mixed fungal/bacterial ear infections.",
-    },
-    {
-      name: "Acetic Acid 2% Otic Solution",
-      description: "Acidifying agent for treatment of superficial infections of the external auditory canal.",
-      specifications: "Contains Acetic Acid 2% w/v. Sterile otic solution.",
-      applications: "Otitis externa caused by Pseudomonas aeruginosa, post-swim ear prevention.",
-    },
-  ],
-  "cephalosporin": [
-    {
-      name: "Cefuroxime 750mg Injection",
-      description: "Second-generation cephalosporin antibiotic for moderate to severe bacterial infections.",
-      specifications: "Each vial contains sterile Cefuroxime Sodium 750mg. Reconstitute with 5mL WFI.",
-      applications: "Lower respiratory tract infections, UTIs, skin/soft tissue infections, surgical prophylaxis.",
-    },
-    {
-      name: "Ceftriaxone 1g Injection",
-      description: "Third-generation cephalosporin with broad-spectrum activity for serious infections.",
-      specifications: "Each vial contains Ceftriaxone Sodium 1g. Reconstitute with 10mL NS or D5W.",
-      applications: "Meningitis, septicemia, complicated UTI, intra-abdominal infections, gonorrhea.",
-    },
-    {
-      name: "Cefoperazone-Sulbactam 1.5g Injection",
-      description: "Beta-lactam/beta-lactamase inhibitor combination for resistant gram-negative infections.",
-      specifications: "Cefoperazone 1g + Sulbactam 0.5g per vial. Extended spectrum activity.",
-      applications: "Hospital-acquired pneumonia, complicated intra-abdominal infections, febrile neutropenia.",
-    },
-    {
-      name: "Cefepime 1g Injection",
-      description: "Fourth-generation cephalosporin with activity against Pseudomonas aeruginosa.",
-      specifications: "Each vial contains Cefepime HCl equivalent to 1g Cefepime. Sterile powder.",
-      applications: "Febrile neutropenia, nosocomial pneumonia, complicated UTI, bacteremia.",
-    },
-  ],
-  "ointments-creams": [
-    {
-      name: "Mupirocin 2% Ointment",
-      description: "Topical antibiotic ointment for primary and secondary skin infections.",
-      specifications: "Contains Mupirocin 2% w/w in a polyethylene glycol base. 5g, 15g, 30g tubes.",
-      applications: "Impetigo, folliculitis, wound infections, nasal decolonization of MRSA.",
-    },
-    {
-      name: "Betamethasone + Clotrimazole Cream",
-      description: "Combined corticosteroid and antifungal cream for inflammatory fungal skin conditions.",
-      specifications: "Betamethasone Valerate 0.1% + Clotrimazole 1% w/w. Cream base.",
-      applications: "Tinea infections with inflammation, cutaneous candidiasis, seborrheic dermatitis.",
-    },
-    {
-      name: "Silver Sulfadiazine 1% Cream",
-      description: "Broad-spectrum antimicrobial cream specifically formulated for burn wound management.",
-      specifications: "Contains Silver Sulfadiazine 1% w/w in a water-miscible cream base.",
-      applications: "Prevention and treatment of wound sepsis in burns, chronic ulcers.",
-    },
-  ],
-  "cream": [
-    {
-      name: "Hydroquinone 2% Cream",
-      description: "Skin-lightening cream for treatment of hyperpigmentation, melasma, and dark spots.",
-      specifications: "Contains Hydroquinone 2% in a moisturizing cream base with SPF.",
-      applications: "Melasma, post-inflammatory hyperpigmentation, freckles, age spots.",
-    },
-    {
-      name: "Tretinoin 0.025% Cream",
-      description: "Vitamin A derivative for acne and anti-aging skin treatment.",
-      specifications: "Contains Tretinoin 0.025% w/w in a cream base. Store below 25°C.",
-      applications: "Acne vulgaris, photoaging, fine wrinkles, skin texture improvement.",
-    },
-    {
-      name: "Calamine Lotion/Cream",
-      description: "Soothing topical preparation for itching, rashes, and minor skin irritations.",
-      specifications: "Contains Calamine 8% and Zinc Oxide 8% in a cream base.",
-      applications: "Chickenpox, contact dermatitis, insect bites, sunburn relief.",
-    },
-  ],
-  "mouthwash": [
-    {
-      name: "Chlorhexidine Gluconate 0.2% Mouthwash",
-      description: "Antiseptic oral rinse for gingivitis prevention and periodontal disease management.",
-      specifications: "Contains Chlorhexidine Gluconate 0.2% w/v. Available in 100mL and 300mL bottles.",
-      applications: "Plaque control, gingivitis prevention, post-surgical oral hygiene, aphthous ulcers.",
-    },
-    {
-      name: "Povidone-Iodine 0.5% Mouthwash",
-      description: "Broad-spectrum antiseptic mouthwash for oral infections and throat decontamination.",
-      specifications: "Contains Povidone-Iodine 0.5% w/v. Ready-to-use solution.",
-      applications: "Oral infections, pharyngitis, pre- and post-operative oral hygiene.",
-    },
-    {
-      name: "Hydrogen Peroxide 1.5% Mouthwash",
-      description: "Oxygenating oral rinse for whitening and oral wound care.",
-      specifications: "Contains Hydrogen Peroxide 1.5% v/v. Mint flavored.",
-      applications: "Canker sores, minor mouth irritations, oral hygiene enhancement.",
-    },
-  ],
-  "toothpaste": [
-    {
-      name: "Sodium Fluoride 1000ppm Toothpaste",
-      description: "Standard fluoride toothpaste for daily cavity prevention and enamel strengthening.",
-      specifications: "Contains Sodium Fluoride providing 1000ppm fluoride. Available in 50g and 100g.",
-      applications: "Daily dental care, cavity prevention, enamel remineralization.",
-    },
-    {
-      name: "Triclosan + Fluoride Toothpaste",
-      description: "Antibacterial fluoride toothpaste for gum health and plaque control.",
-      specifications: "Triclosan 0.3% + Sodium Monofluorophosphate providing 1000ppm fluoride.",
-      applications: "Gum disease prevention, plaque reduction, anti-gingivitis therapy.",
-    },
-    {
-      name: "Desensitizing Toothpaste (Potassium Nitrate 5%)",
-      description: "Clinically proven toothpaste for relief of dental hypersensitivity.",
-      specifications: "Contains Potassium Nitrate 5% and Sodium Fluoride 1450ppm.",
-      applications: "Dentinal hypersensitivity, sensitive teeth, post-whitening sensitivity.",
-    },
-  ],
-  "lotion": [
-    {
-      name: "Lacto Calamine Lotion",
-      description: "Skin-soothing and oil-control lotion for combination and oily skin types.",
-      specifications: "Contains Calamine, Kaolin, Zinc Oxide, and Glycerine in a light lotion base.",
-      applications: "Oily skin management, skin pore minimization, sunburn relief.",
-    },
-    {
-      name: "Ammonium Lactate 12% Lotion",
-      description: "Alpha-hydroxy acid lotion for treatment of dry, scaly skin conditions.",
-      specifications: "Contains Ammonium Lactate 12% w/w providing lactic acid in a lotion base.",
-      applications: "Ichthyosis vulgaris, xerosis, dry scaly skin, keratosis pilaris.",
-    },
-    {
-      name: "Permethrin 5% Lotion",
-      description: "Topical antiparasitic lotion for scabies treatment.",
-      specifications: "Contains Permethrin 5% w/w in a lotion base. Single-application treatment.",
-      applications: "Scabies (Sarcoptes scabiei), head lice treatment.",
-    },
-  ],
-  "musculoskeletal": [
-    {
-      name: "Diclofenac Sodium 75mg/3mL Injection",
-      description: "NSAID injection for moderate to severe musculoskeletal pain and inflammation.",
-      specifications: "Each ampoule contains Diclofenac Sodium 75mg/3mL. Deep IM injection.",
-      applications: "Post-operative pain, acute gout, renal colic, musculoskeletal pain.",
-    },
-    {
-      name: "Methylprednisolone 40mg/mL Injection",
-      description: "Corticosteroid injection for inflammatory musculoskeletal conditions.",
-      specifications: "Each vial contains Methylprednisolone Acetate 40mg/mL. Multi-dose vial.",
-      applications: "Rheumatoid arthritis flares, bursitis, tendinitis, synovitis.",
-    },
-    {
-      name: "Etoricoxib 90mg Tablets",
-      description: "COX-2 selective NSAID for osteoarthritis and rheumatoid arthritis.",
-      specifications: "Film-coated tablets containing Etoricoxib 90mg. Pack of 7s and 14s.",
-      applications: "Osteoarthritis, rheumatoid arthritis, ankylosing spondylitis, acute gout.",
-    },
-  ],
-  "neuromuscular-blockade": [
-    {
-      name: "Vecuronium Bromide 4mg Injection",
-      description: "Non-depolarizing neuromuscular blocking agent for intraoperative muscle relaxation.",
-      specifications: "Each vial contains Vecuronium Bromide 4mg powder. Reconstitute with 2mL WFI.",
-      applications: "Facilitation of endotracheal intubation, skeletal muscle relaxation during surgery.",
-    },
-    {
-      name: "Atracurium Besylate 25mg/2.5mL Injection",
-      description: "Intermediate-duration non-depolarizing neuromuscular blocking agent.",
-      specifications: "Each ampoule contains Atracurium Besylate 25mg in 2.5mL. Refrigerate.",
-      applications: "Endotracheal intubation, muscle relaxation during mechanical ventilation.",
-    },
-    {
-      name: "Rocuronium Bromide 50mg/5mL Injection",
-      description: "Rapid-onset non-depolarizing neuromuscular blocking agent suitable for RSI.",
-      specifications: "Each vial contains Rocuronium Bromide 50mg in 5mL (10mg/mL). Refrigerate.",
-      applications: "Rapid sequence intubation, general anesthesia muscle relaxation.",
-    },
-  ],
-  "endocrine": [
-    {
-      name: "Levothyroxine Sodium 100mcg Tablets",
-      description: "Synthetic thyroid hormone for hypothyroidism replacement therapy.",
-      specifications: "Each tablet contains Levothyroxine Sodium 100mcg. Pack of 30 tablets.",
-      applications: "Hypothyroidism, thyroid hormone replacement, TSH suppression in thyroid cancer.",
-    },
-    {
-      name: "Metformin HCl 500mg Tablets",
-      description: "Biguanide oral antidiabetic agent for type 2 diabetes management.",
-      specifications: "Each tablet contains Metformin Hydrochloride 500mg. Pack of 30.",
-      applications: "Type 2 diabetes mellitus first-line therapy, pre-diabetes, polycystic ovary syndrome.",
-    },
-    {
-      name: "Glibenclamide 5mg Tablets",
-      description: "Second-generation sulfonylurea for blood glucose control in type 2 diabetes.",
-      specifications: "Each tablet contains Glibenclamide 5mg. Scored for dose flexibility.",
-      applications: "Type 2 diabetes mellitus, adjunct to diet and exercise.",
-    },
-  ],
-  "respiratory": [
-    {
-      name: "Salbutamol 2.5mg/2.5mL Nebulizer Solution",
-      description: "Short-acting beta-2 agonist bronchodilator for acute bronchospasm relief.",
-      specifications: "Each unit-dose vial contains Salbutamol Sulfate 2.5mg in 2.5mL. Sterile.",
-      applications: "Acute asthma attacks, COPD exacerbations, exercise-induced bronchospasm.",
-    },
-    {
-      name: "Budesonide 0.5mg/2mL Nebulizer Suspension",
-      description: "Inhaled corticosteroid for maintenance therapy of asthma and COPD.",
-      specifications: "Each unit contains Budesonide 0.5mg in 2mL suspension. Single-dose ampoule.",
-      applications: "Asthma maintenance, croup, COPD maintenance therapy.",
-    },
-    {
-      name: "Ipratropium Bromide 0.5mg/2.5mL Nebulizer Solution",
-      description: "Anticholinergic bronchodilator for COPD and asthma management.",
-      specifications: "Each unit contains Ipratropium Bromide 0.5mg in 2.5mL. Sterile solution.",
-      applications: "COPD bronchospasm, combined bronchodilator therapy with beta-agonists.",
-    },
-  ],
-  "antimalarial": [
-    {
-      name: "Artemether 20mg + Lumefantrine 120mg Tablets",
-      description: "ACT combination therapy for uncomplicated falciparum malaria.",
-      specifications: "Each tablet contains Artemether 20mg and Lumefantrine 120mg. 6-dose course.",
-      applications: "Treatment of uncomplicated Plasmodium falciparum malaria.",
-    },
-    {
-      name: "Artesunate 60mg Injection",
-      description: "Parenteral artemisinin derivative for severe falciparum malaria.",
-      specifications: "Each vial contains Artesunate 60mg powder. Reconstitute with 1mL NaHCO3.",
-      applications: "Severe malaria, hyperparasitemia, cerebral malaria.",
-    },
-    {
-      name: "Chloroquine Phosphate 250mg Tablets",
-      description: "4-aminoquinoline antimalarial for prophylaxis and treatment in sensitive regions.",
-      specifications: "Each tablet contains Chloroquine Phosphate 250mg (equiv. to 155mg base).",
-      applications: "Malaria prophylaxis, treatment of chloroquine-sensitive Plasmodium infections, rheumatoid arthritis.",
-    },
-  ],
-};
+const tabletsRaw = `1	GENERAL	TABLET	Paracetamol Tablets IP 500 mg	Uncoated
+2	GENERAL	TABLET	Paracetamol Tablets IP 650 mg	Uncoated
+3	GENERAL	TABLET	Ibuprofen Tablets IP 200 mg	Film coated
+4	GENERAL	TABLET	Ibuprofen Tablets IP 400 mg	Film coated
+5	GENERAL	TABLET	Nimesulide Tablets 100 mg	Uncoated
+6	GENERAL	TABLET	Nimesulide Tablets 200 mg	Uncoated
+7	GENERAL	TABLET	Nimesulide Dispersible Tablets 100mg	uncoated
+8	GENERAL	TABLET	Diclofenac Sodium Tablets IP 50 mg	Enteric Coated
+9	GENERAL	TABLET	Diclofenac Sodium PR Tablets 100 mg	Enteric Coated
+10	GENERAL	TABLET	Ibuprofen and Paracetamol Tablets (400+325)	Uncoated
+11	GENERAL	TABLET	Nimesulide and Paracetamol Tablets (100+325)	Uncoated
+12	GENERAL	TABLET	Nimesulide and Paracetamol Tablets (100+325)	Uncoated
+13	GENERAL	TABLET	Aceclofenac 100mg	Film coated
+14	GENERAL	TABLET	Aceclofenac, Paracetamol Tablets (100+500)	Film coated
+15	GENERAL	TABLET	Aceclofenac, Paracetamol Tablets (100+325)	Film coated
+16	GENERAL	TABLET	Aceclofenac, Paracetamol Tablets (100+325)	Film coated
+17	GENERAL	TABLET	Aceclofenac, Paracetamol Tablets (100+325)	Film coated
+18	GENERAL	TABLET	Aceclofenac, Paracetamol and Serratiopeptidase Tablets (100+325+15)	Film coated
+19	GENERAL	TABLET	Diclofenac Sodium and Paracetamol Tablets IP (50+325)	uncoated
+20	GENERAL	TABLET	Diclofenac-50+paracetamol-325+Chlorzoxazone-250	Uncoated
+21	GENERAL	TABLET	Cetirizine Hydrochloride Tablets IP 10mg	Film coated
+22	GENERAL	TABLET	Artemether + Lumefantrine Tablets (20 + 120)	Uncoated
+23	GENERAL	TABLET	Artemether + Lumefantrine Tablets (80 + 480)	Uncoated
+24	GENERAL	TABLET	Dexamethasone 0.5mg	Uncoated
+25	GENERAL	TABLET	Dexamethasone 4mg	Uncoated
+26	GENERAL	TABLET	Fluconazole 150mg	Uncoated
+27	GENERAL	TABLET	Albendazole 200mg	Film coated
+28	GENERAL	TABLET	Albendazole 400mg	Film coated
+29	GENERAL	TABLET	Chlorpheniremine Maleate 4mg	Uncoated
+30	GENERAL	TABLET	Levocetirizine Tablets IP 5mg	Film coated
+31	GENERAL	TABLET	Montelukast Sodium and Levocetirizine Tablets IP (10+5)	Film coated
+32	GENERAL	TABLET	Paracetamol, Phenylephrine HCL, CPM Tablets (500+5+2)	Uncoated
+33	GENERAL	TABLET	Paracetamol, Phenylephrine HCL, CPM Tablets (500+5+2)	Uncoated
+34	GENERAL	TABLET	Paracetamol-500+Caffeine-30+PEHCL-10+CPM-4 Tab	UNCOATED
+35	GENERAL	TABLET	Paracetamol-325+PEHCL-5+CETIRIZINE-5 Tab	UNCOATED
+37	GENERAL	TABLET	Norfloxacin Tablets IP 400mg	Film coated
+38	GENERAL	TABLET	Ciprofloxacin Tablets IP 250mg	Film coated
+39	GENERAL	TABLET	Ciprofloxacin Tablets IP 500mg	Film coated
+40	GENERAL	TABLET	Levofloxacin Tablets IP 250mg	Film coated
+41	GENERAL	TABLET	Levofloxacin Tablets IP 500mg	Film coated
+42	GENERAL	TABLET	Ofloxacin Tablets IP 200mg	Film coated
+43	GENERAL	TABLET	Ofloxacin Tablets IP 400mg	Film coated
+44	GENERAL	TABLET	OFLOXACIN-200+ORNIDAZOLE-500 MG	Film coated
+45	GENERAL	TABLET	Sparfloxacin Tablets IP 100mg	Film coated
+46	GENERAL	TABLET	Sparfloxacin Tablets IP 200mg	Film coated
+47	GENERAL	TABLET	Azithromycin Tablets IP 250mg	Film coated
+48	GENERAL	TABLET	Azithromycin Tablets IP 500mg	Film coated
+49	GENERAL	TABLET	Erythromycin Tablets BP 500mg	Film coated
+50	GENERAL	TABLET	Clarithromycin Tablets IP 250mg	Film coated
+51	GENERAL	TABLET	Clarithromycin Tablets IP 500mg	Uncoated
+52	GENERAL	TABLET	Roxithromycin Tablets IP 150mg	Uncoated
+53	GENERAL	TABLET	Roxithromycin Tablets IP 300mg	Film Coated
+54	GENERAL	TABLET	Amlodepine Tablets IP 5 mg	Film Coated
+55	GENERAL	TABLET	Amlodepine Tablets IP 10 mg	Uncoated
+56	GENERAL	TABLET	Atorvastatin Tablets IP 10 mg	Film Coated
+57	GENERAL	TABLET	Atorvastatin Tablets IP 20 mg	Film Coated
+58	GENERAL	TABLET	Nebivolol Tablets IP 5 mg	Uncoated
+59	GENERAL	TABLET	Rosuvastatin Tablets IP 10 mg	Uncoated
+60	GENERAL	TABLET	Rosuvastatin Tablets IP 20 mg	Uncoated
+61	GENERAL	TABLET	Telmisartan Tablets IP 20 mg	Uncoated
+62	GENERAL	TABLET	Telmisartan Tablets IP 40 mg	Film coated
+63	GENERAL	TABLET	Telmisartan Tablets IP 80 mg	Film Coated
+64	GENERAL	TABLET	Metoprolol Tartrate IP 50 mg	Film Coated
+65	GENERAL	TABLET	Metoprolol Sucssinate PR Tablets IP 50 mg	Film Coated
+66	GENERAL	TABLET	Levetiracetam Tablets IP 250 mg	Uncoated
+67	GENERAL	TABLET	Levetiracetam Tablets IP 500 mg	Uncoated
+68	GENERAL	TABLET	Levetiracetam Tablets IP 750 mg	Uncoated
+69	GENERAL	TABLET	Glimepiride Tablets IP 1 mg	Uncoated
+70	GENERAL	TABLET	Glimepiride Tablets IP 2 mg	Uncoated
+71	GENERAL	TABLET	Glimepiride Tablets IP 4 mg	Uncoated
+72	GENERAL	TABLET	Voglibose Tablets IP 0.2 mg	Uncoated
+73	GENERAL	TABLET	Voglibose Tablets IP 0.3 mg	Uncoated
+74	GENERAL	TABLET	Voglibose MD Tablets 0.2 mg	Uncoated
+75	GENERAL	TABLET	Voglibose MD Tablets 0.3 mg	Uncoated
+76	GENERAL	TABLET	Metformin HCL Tablets IP 500 mg	
+77	GENERAL	TABLET	Metformin HCL Tablets IP 500 mg Prolong Rlease Tablet	
+80	GENERAL	TABLET	Ranitidine Hydrochloride Tablets IP 300mg	UNCOATED
+81	GENERAL	TABLET	Pantoprazole Gastro Resistant Tablets IP 40mg	CHEWABLE
+82	GENERAL	TABLET	Rabeprazole Gastro Resistant Tablets IP 20mg	Film coated
+83	GENERAL	TABLET	Pantoprazole Tablets IP 40mg (WHITE)	Film coated
+84	GENERAL	TABLET	Pantoprazole and Domperidone Tablets (40+10)	Film coated
+85	GENERAL	TABLET	Fluconazole Tablets IP 150mg	Film coated
+86	GENERAL	TABLET	Fluconazole Tablets IP 200mg	Enteric coated
+87	GENERAL	TABLET	Fluconazole Tablets IP 200mg	Enteric coated
+88	GENERAL	TABLET	Fluconazole Tablets IP 400mg	Enteric coated
+89	GENERAL	TABLET	Fluconazole Tablets IP 400mg	Enteric coated
+90	GENERAL	TABLET	Deflazacort Tablets 6 mg	Uncoated
+91	GENERAL	TABLET	Deflazacort Tablets 12 mg	Uncoated
+92	GENERAL	TABLET	Deflazacort Tablets 30 mg	Uncoated
+93	GENERAL	TABLET	Tamsulosine HCL Modified Release Tablets 0.4mg	Uncoated
+94	GENERAL	TABLET	Ondansetron Orally DT IP 4mg	Uncoated
+95	GENERAL	TABLET	Dexamethasone Tablets IP 0.5 mg	Uncoated
+96	GENERAL	TABLET	Betahistine Tablets IP 8 mg	Uncoated
+97	GENERAL	TABLET	Betahistine Tablets IP 16 mg	Uncoated
+98	GENERAL	TABLET	Betahistine Tablets IP 24 mg	Film coated
+99	GENERAL	TABLET	Terbinafine Tablets 250 mg	Uncoated
+100	GENERAL	TABLET	Voriconazole Tablets IP 200 mg	Uncoated
+101	GENERAL	TABLET	Methyl Prednisolone Tablets IP 4 mg	Uncoated
+102	GENERAL	TABLET	Oflaxacin 200 & Ordinazole 500 mg Tablets IP	Uncoated
+103	GENERAL	TABLET	GABAPENTINE TABLETS IP 100MG	Uncoated
+104	GENERAL	TABLET	GABAPENTINE TABLETS IP 300MG	Uncoated
+105	GENERAL	TABLET	LOPERAMIDE TABLETS IP 2MG	Film coated
+106	GENERAL	TABLET	TERBUTALINE SULPHATE IP 2.5MG	Uncoated
+107	GENERAL	TABLET	CHLOROQUINE PHOSPHATE TABLETS 250MG	Film coated
+108	GENERAL	TABLET	CHLOROQUINE PHOSPHATE TABLETS 500MG	Film coated
+109	GENERAL	TABLET	HYDROXYCHLOROQUINE SULPHATE TABLETS 200MG	Film coated
+110	GENERAL	TABLET	HYDROXYCHLOROQUINE SULPHATE TABLETS 400MG	UNCOATED
+111	GENERAL	TABLET	ASCORBIC ACID TABLETS IP 500MG	UNCOATED
+112	GENERAL	TABLET	CALCIUM AND VITAMIN D3 TAB	UNCOATED
+113	GENERAL	TABLET	SILDENAFIL CITRATE TABLETS 100MH	UNCOATED
+114	GENERAL	TABLET	TADAFIL TABLETS IP 50GM	UNCOATED
+115	GENERAL	CAPSULE	Itraconazole Capsules 100mg	
+116	GENERAL	CAPSULE	Itraconazole Capsules 200mg	
+117	GENERAL	CAPSULE	Omeprazole Gastro Resistant Capsules IP 20mg	
+118	GENERAL	CAPSULE	Opeprazole and Domperidone Capsules IP (20+10)	
+119	GENERAL	CAPSULE	Opeprazole and Domperidone Capsules IP (20+10)	
+120	GENERAL	CAPSULE	Rabeprazole Sodium EC and Domperidone SR Capsules (20+30)	
+122	GENERAL	CAPSULE	Pantoprazole EC and Domperidone SR capsules (40+30)	2+275 MG/5ML
+123	GENERAL	CAPSULE	Pantoprazole EC and Domperidone SR capsules (40+30)	250mg/5ml
+124	GENERAL	CAPSULE	Itraconazole Capsules 100mg	125mg/5ml
+125	GENERAL	CAPSULE	Itraconazole Capsules 200mg	100+162.5mg/5ml
+126	GENERAL	CAPSULE	Clindamycin HCL Capsules IP 150 mg	200mg/5ml
+127	GENERAL	CAPSULE	Clindamycin HCL Capsules IP 300 mg	2gm/5ml
+`;
+
+const apisRaw = `1
+Fluticasone Propionate
+(CAS 80474-14-2)
+2
+Fluticasone Furoate
+(CAS 397864-44-7)
+3
+Fluocinolone Acetonide
+(CAS 67-73-2)
+4
+Methylprednisolone
+(CAS 83-43-2)
+5
+Budesonide
+(CAS 51333-22-3)
+6
+Cetylpyridinium Chloride
+(CAS 6004-24-6)
+7
+Lauryl Pyridinium Chloride
+(CAS 207234-02-4)
+8
+Potassium Chloride [Pharma Grade]
+(CAS 7447-40-7)`;
+
+type CategoryRow = { id: number; slug: string };
 
 async function seed() {
   console.log("Seeding database...");
@@ -423,26 +432,65 @@ async function seed() {
     categoryMap[cat.slug] = cat.id;
   }
 
-  console.log("Inserting products...");
-  for (const [slug, products] of Object.entries(productsByCategorySlug)) {
-    const categoryId = categoryMap[slug];
-    if (!categoryId) {
-      console.warn(`Category not found for slug: ${slug}`);
-      continue;
-    }
-    for (const product of products) {
-      await db.insert(productsTable).values({
-        name: product.name,
-        categoryId,
-        description: product.description,
-        specifications: product.specifications ?? null,
-        applications: product.applications ?? null,
-        genericName: product.genericName ?? null,
-        strength: product.strength ?? null,
-        containerType: product.containerType ?? null,
-        isPrefillSyringe: product.isPrefillSyringe ?? false,
+  const productsToInsert = [];
+
+  function generateSlug(text: string, index: number): string {
+    return text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '') + '-' + index;
+  }
+
+  // Parse Injectables
+  const injectablesLines = injectablesRaw.trim().split('\n');
+  let pIdx = 0;
+  for (const line of injectablesLines) {
+    const parts = line.split('\t');
+    if (parts.length >= 4) {
+      productsToInsert.push({
+        categoryId: categoryMap['injectables'],
+        name: parts[2].trim(),
+        slug: generateSlug(parts[2].trim(), ++pIdx),
+        description: `${parts[0]} - ${parts[1]}`,
+        strength: parts[3].trim(),
       });
     }
+  }
+
+  // Parse Tablets/Capsules
+  const tabletsLines = tabletsRaw.trim().split('\n');
+  for (const line of tabletsLines) {
+    const parts = line.split('\t');
+    if (parts.length >= 4) {
+      productsToInsert.push({
+        categoryId: categoryMap['tablet-capsules'],
+        name: parts[3].trim(),
+        slug: generateSlug(parts[3].trim(), ++pIdx),
+        description: `Area: ${parts[1]}, Dosage: ${parts[2]}`,
+        strength: parts.length > 4 ? parts[4].trim() : '',
+      });
+    }
+  }
+
+  // Parse APIs
+  const apisLines = apisRaw.trim().split('\n');
+  for (let i = 0; i < apisLines.length; i += 3) {
+    if (i + 2 < apisLines.length) {
+      productsToInsert.push({
+        categoryId: categoryMap['apis'],
+        name: apisLines[i + 1].trim(),
+        slug: generateSlug(apisLines[i + 1].trim(), ++pIdx),
+        description: `API Element - ${apisLines[i + 2].trim()}`,
+        genericName: apisLines[i + 1].trim(),
+        specifications: apisLines[i + 2].trim()
+      });
+    }
+  }
+
+  console.log(`Inserting ${productsToInsert.length} products...`);
+  
+  // Insert in batches
+  const batchSize = 100;
+  for (let i = 0; i < productsToInsert.length; i += batchSize) {
+    const batch = productsToInsert.slice(i, i + batchSize);
+    await db.insert(productsTable).values(batch);
   }
 
   console.log("Seeding complete!");

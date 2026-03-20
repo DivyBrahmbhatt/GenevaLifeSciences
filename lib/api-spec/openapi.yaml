@@ -53,17 +53,22 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Product"
-  /products/{id}:
+  /products/{categorySlug}/{slug}:
     get:
       operationId: getProduct
       tags: [products]
-      summary: Get product by ID
+      summary: Get product by category and slug
       parameters:
-        - name: id
+        - name: categorySlug
           in: path
           required: true
           schema:
-            type: integer
+            type: string
+        - name: slug
+          in: path
+          required: true
+          schema:
+            type: string
       responses:
         "200":
           description: Product details
@@ -131,6 +136,8 @@ components:
           type: integer
         name:
           type: string
+        slug:
+          type: string
         categoryId:
           type: integer
         categoryName:
@@ -159,6 +166,7 @@ components:
       required:
         - id
         - name
+        - slug
         - categoryId
         - categoryName
         - categorySlug

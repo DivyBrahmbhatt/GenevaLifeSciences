@@ -31,7 +31,7 @@ export default function Categories() {
             {categories?.map((cat) => (
               <Link 
                 key={cat.id} 
-                href={`/products?category=${cat.slug}`}
+                href={`/products/${cat.slug}`}
                 className="bg-card rounded-2xl border border-border p-8 shadow-sm hover:shadow-xl hover:border-primary/40 transition-all duration-300 group relative overflow-hidden flex flex-col h-full"
               >
                 <div className="absolute -right-6 -top-6 w-24 h-24 bg-primary/5 rounded-full group-hover:bg-primary/10 transition-colors pointer-events-none" />
