@@ -27,6 +27,11 @@ if (!basePath) {
 }
 
 export default defineConfig({
+  define: {
+    "process.env.REACT_APP_FIREBASE_API_KEY": JSON.stringify(process.env.REACT_APP_FIREBASE_API_KEY || ""),
+    "process.env.REACT_APP_FIREBASE_PROJECT_ID": JSON.stringify(process.env.REACT_APP_FIREBASE_PROJECT_ID || ""),
+    "process.env.REACT_APP_FIREBASE_APP_ID": JSON.stringify(process.env.REACT_APP_FIREBASE_APP_ID || ""),
+  },
   base: basePath,
   plugins: [
     react(),

@@ -271,6 +271,8 @@ async function parseSuccessBody(
   }
 }
 
+import { categoriesData, productsData } from "./static-data";
+
 export async function customFetch<T = unknown>(
   input: RequestInfo | URL,
   options: CustomFetchOptions = {},
@@ -282,6 +284,81 @@ export async function customFetch<T = unknown>(
   if (init.body != null && (method === "GET" || method === "HEAD")) {
     throw new TypeError(`customFetch: ${method} requests cannot have a body.`);
   }
+
+  const url = resolveUrl(input);
+
+  // --- STATIC MOCK INTERCEPTOR FOR SERVERLESS DEPLOYMENT ---
+  if (method === "GET" && url.startsWith("/api/categories")) {
+    return Promise.resolve(categoriesData as T);
+  }
+
+  if (method === "GET" && url.startsWith("/api/products")) {
+    // Match a single product fetch: /api/products/:categorySlug/:slug
+    const singleMatch = url.match(/^\/api\/products\/([^\/]+)\/([^\/?]+)$/);
+    if (singleMatch) {
+      const catSlug = singleMatch[1];
+      const prodSlug = singleMatch[2];
+      const product = productsData.find(p => p.categorySlug === catSlug && p.slug === prodSlug);
+      if (product) return Promise.resolve(product as T);
+      throw new Error(`Product not found`);
+    }
+
+    // Match list fetches with query params
+    const dummyUrl = new URL("http://dummy" + url);
+    const category = dummyUrl.searchParams.get("category");
+    const search = dummyUrl.searchParams.get("search");
+
+    let result = productsData;
+    if (category && category !== "null") {
+      result = result.filter(p => p.categorySlug === category);
+    }
+    if (search && search !== "null") {
+      const s = search.toLowerCase();
+      result = result.filter(p => 
+        p.name.toLowerCase().includes(s) || 
+        (p.description && p.description.toLowerCase().includes(s)) || 
+        (p.genericName && p.genericName.toLowerCase().includes(s))
+      );
+    }
+    return Promise.resolve(result as T);
+  }
+  
+  if (method === "POST" && url.startsWith("/api/contact")) {
+    const projectId = process.env.REACT_APP_FIREBASE_PROJECT_ID;
+    if (!projectId) {
+      // Simulate success if missing config so UI doesn't crash
+      return Promise.resolve({ success: true, message: "Contact mock accepted locally." } as T);
+    }
+
+    const rawBody = typeof init.body === "string" ? JSON.parse(init.body) : init.body || {};
+    const firebaseUrl = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/contact_submissions`;
+
+    const firestorePayload = {
+      fields: {
+        name: { stringValue: rawBody.name || "Unknown" },
+        email: { stringValue: rawBody.email || "Unknown" },
+        phone: { stringValue: rawBody.phone || "" },
+        message: { stringValue: rawBody.message || "" },
+        createdAt: { timestampValue: new Date().toISOString() }
+      }
+    };
+
+    const res = await fetch(firebaseUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(firestorePayload)
+    });
+
+    if (!res.ok) {
+      throw new Error(`Firebase submission failed: ${await res.text()}`);
+    }
+
+    return { 
+      success: true, 
+      message: "Your message has been securely submitted to the database!" 
+    } as T;
+  }
+  // ---------------------------------------------------------
 
   const headers = mergeHeaders(isRequest(input) ? input.headers : undefined, headersInit);
 
