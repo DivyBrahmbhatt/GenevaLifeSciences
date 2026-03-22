@@ -9,6 +9,8 @@ on:
       - 'artifacts/geneva-life-sciences/**'
       - 'package.json'
       - 'pnpm-workspace.yaml'
+      - '.github/workflows/**'
+  workflow_dispatch:
 
 jobs:
   deploy:
