@@ -1,0 +1,30 @@
+name: Contact Form Alerts
+
+on:
+  schedule:
+    # Run every 15 minutes to check for new submissions
+    - cron: '*/15 * * * *'
+  # Allow manual triggering
+  workflow_dispatch:
+
+jobs:
+  send-contact-alerts:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install firebase-admin nodemailer --no-save
+
+      - name: Run Contact Alerts Script
+        env:
+          FIREBASE_SERVICE_ACCOUNT_KEY: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_KEY }}
+          EMAIL_USER: ${{ secrets.EMAIL_USER }}
+          EMAIL_PASS: ${{ secrets.EMAIL_PASS }}
+        run: node .github/scripts/send-contact-alerts.js
