@@ -3,6 +3,9 @@
 # Environment variables
 .env
 
+# Terraform
+terraform/
+
 # compiled output
 dist
 tmp
