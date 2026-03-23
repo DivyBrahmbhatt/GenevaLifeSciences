@@ -143,7 +143,9 @@ export default function Products() {
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {products?.map(product => (
+              {products?.map(product => {
+                const badgeLabel = (product as any).subCategory || product.categoryName;
+                return (
                 <Link 
                   key={product.id} 
                   href={`/products/${product.categorySlug}/${product.slug}`}
@@ -152,7 +154,7 @@ export default function Products() {
                   <div className="mb-2">
                     <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-secondary/10 text-secondary text-xs font-bold rounded-md mb-3 uppercase tracking-wider">
                       <Box className="w-3 h-3" />
-                      {product.categoryName}
+                      {badgeLabel}
                     </span>
                     <h3 className="text-lg font-bold text-foreground leading-tight group-hover:text-primary transition-colors">
                       {product.name}
@@ -160,14 +162,15 @@ export default function Products() {
                   </div>
                   
                   <p className="text-sm text-muted-foreground line-clamp-3 mt-2 flex-grow">
-                    {product.description}
+                     {product.description}
                   </p>
 
                   <div className="mt-6 pt-4 border-t border-border/50 text-sm font-semibold text-primary flex items-center">
                     View Details
                   </div>
                 </Link>
-              ))}
+                );
+              })}
             </div>
           )}
         </div>

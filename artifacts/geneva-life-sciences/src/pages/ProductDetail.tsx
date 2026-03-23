@@ -61,7 +61,7 @@ export default function ProductDetail() {
           <div className="flex flex-col">
             <div className="mb-6">
               <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary/10 text-secondary text-sm font-bold uppercase tracking-wider mb-4">
-                {product.categoryName}
+                {(product as any).subCategory ? `${product.categoryName} | ${(product as any).subCategory}` : product.categoryName}
               </div>
               <h1 className="text-4xl md:text-5xl font-display font-extrabold text-foreground mb-4">
                 {product.name}

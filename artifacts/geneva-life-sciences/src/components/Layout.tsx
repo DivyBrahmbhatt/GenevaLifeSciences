@@ -134,6 +134,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
               <h3 className="text-white font-semibold mb-6">Key Categories</h3>
               <ul className="space-y-4 text-sm">
                 <li><Link href="/products/injectables" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="hover:text-primary transition-colors">Injectables</Link></li>
+                <li><Link href="/products/ointments-and-creams" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="hover:text-primary transition-colors">Ointments and Creams</Link></li>
                 <li><Link href="/products/tablet-capsules" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="hover:text-primary transition-colors">Tablet/capsules</Link></li>
                 <li><Link href="/products/apis" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="hover:text-primary transition-colors">APIs(Active Pharmaceutical Ingredients)</Link></li>
               </ul>

@@ -35,7 +35,7 @@ export default function Home() {
               </span>
             </h1>
             <p className="text-lg lg:text-xl text-muted-foreground mb-10 leading-relaxed max-w-xl">
-              Geneva Life Sciences Private Limited is a premier manufacturer of over 30 high-quality medical and pharmaceutical products spanning diverse therapeutic categories.
+              Geneva Life Sciences Private Limited is a premier manufacturer of over 500 high-quality medical and pharmaceutical products spanning diverse therapeutic categories.
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4">
@@ -62,7 +62,7 @@ export default function Home() {
         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 mix-blend-overlay"></div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 px-8 text-primary-foreground text-center relative z-10">
           <div>
-            <div className="text-4xl font-display font-bold mb-2">30+</div>
+            <div className="text-4xl font-display font-bold mb-2">500+</div>
             <div className="text-primary-foreground/80 font-medium">Distinct Products</div>
           </div>
           <div>
@@ -91,25 +91,28 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
               {
-                title: "Prefilled Syringes",
-                desc: "High-precision delivery systems ensuring exact dosages, safety, and convenience.",
+                title: "Injectables",
+                desc: "Extensive range of high-quality injectable pharmaceutical formulations for diverse therapeutic needs.",
                 icon: Activity,
                 color: "text-blue-500",
-                bg: "bg-blue-500/10"
-              },
-              {
-                title: "Ophthalmic & Otic",
-                desc: "Sterile eye and ear preparations manufactured under the strictest clean-room standards.",
-                icon: Microscope,
-                color: "text-teal-500",
-                bg: "bg-teal-500/10"
+                bg: "bg-blue-500/10",
+                link: "/products/injectables"
               },
               {
                 title: "Ointments & Creams",
-                desc: "Therapeutic topical applications for dermatological and musculoskeletal disorders.",
+                desc: "Therapeutic topical applications and highly specialized dermatological treatments.",
+                icon: Microscope,
+                color: "text-teal-500",
+                bg: "bg-teal-500/10",
+                link: "/products/ointments-and-creams"
+              },
+              {
+                title: "Tablets & Capsules",
+                desc: "Solid oral dosage forms manufactured under the strictest international GMP standards.",
                 icon: Globe,
                 color: "text-indigo-500",
-                bg: "bg-indigo-500/10"
+                bg: "bg-indigo-500/10",
+                link: "/products/tablet-capsules"
               }
             ].map((feature, idx) => (
               <motion.div 
@@ -125,7 +128,7 @@ export default function Home() {
                 </div>
                 <h3 className="text-xl font-bold mb-3">{feature.title}</h3>
                 <p className="text-muted-foreground leading-relaxed mb-6">{feature.desc}</p>
-                <Link href="/categories" className="text-primary font-semibold flex items-center gap-1 group-hover:gap-2 transition-all">
+                <Link href={feature.link} onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="text-primary font-semibold flex items-center gap-1 group-hover:gap-2 transition-all">
                   View Category <ArrowRight className="w-4 h-4" />
                 </Link>
               </motion.div>

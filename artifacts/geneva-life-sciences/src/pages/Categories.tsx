@@ -19,15 +19,15 @@ export default function Categories() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         {isLoading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[1,2,3,4,5,6].map(i => (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
+            {[1,2,3,4].map(i => (
               <div key={i} className="bg-card rounded-2xl border border-border p-6 h-40 animate-pulse" />
             ))}
           </div>
         ) : error ? (
           <div className="text-center text-red-500 py-12">Failed to load categories.</div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 max-w-5xl mx-auto">
             {categories?.map((cat) => (
               <Link 
                 key={cat.id} 
